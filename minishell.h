@@ -1,0 +1,53 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: snovakov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/10/04 16:59:58 by snovakov          #+#    #+#             */
+/*   Updated: 2023/10/04 17:00:00 by snovakov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef MINISHELL_H
+ #define MINISHELL_H
+
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+
+typedef struct s_token
+{
+	char	*tok;
+	char	*cmd;
+	int	pfd;
+	int	type;		// 1-exec, 2-arg, 3-pipe, 4-rred, 5-lred, 6-rapp, 7-lapp, 8-singleQ 9-doubleQ 10-file
+}	t_token;
+
+typedef struct s_shell
+{
+	char	**env;
+	t_token	*t;
+	int	tnb;
+	int	i;
+	int	nb;
+	int	ln;
+	char	*l;
+	char	*prompt;
+}	t_shell;
+
+void			*ft_calloc(size_t count, size_t size);
+unsigned int	ft_strlen(char *s);
+void			ft_dollar(t_shell *s);
+int				ft_isvname(char c);
+unsigned int	ft_dolen(char *s, int start);
+char			*ft_getenv(char **env, char *s);
+int				ft_token(t_shell *s);
+char			*ft_strjoin(char *a, char *b);
+void	ft_perror(t_shell *s);
+void	ft_berror(t_shell *s);
+
+#endif

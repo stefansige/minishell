@@ -23,8 +23,10 @@ typedef struct s_token
 {
 	char	*tok;
 	char	*cmd;
+	char	**arg;
+	int	fdin;
 	int	pfd;
-	int	type;		// 1-exec, 2-arg, 3-pipe, 4-rred, 5-lred, 6-rapp, 7-lapp, 8-singleQ 9-doubleQ 10-file
+	int	type;		// 1-cmd, 2-arg, 3-pipe, 4-rred, 5-lred, 6-rapp, 7-lapp, 8-singleQ 9-doubleQ 10-file
 }	t_token;
 
 typedef struct s_shell
@@ -35,6 +37,7 @@ typedef struct s_shell
 	int	i;
 	int	nb;
 	int	ln;
+	int	pipe[2];
 	char	*l;
 	char	*prompt;
 }	t_shell;
@@ -49,5 +52,7 @@ int				ft_token(t_shell *s);
 char			*ft_strjoin(char *a, char *b);
 void	ft_perror(t_shell *s);
 void	ft_berror(t_shell *s);
+char	*ft_strcpy(char *s);
+char	**ft_split(char *s, char c);
 
 #endif

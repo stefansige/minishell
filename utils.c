@@ -100,6 +100,22 @@ char	*ft_strjoin(char *a, char *b)
 	return (strjoin);
 }
 
+char	*ft_strcpy(char *s)
+{
+	char	*cpy;
+	int	i;
+
+	if (!s)
+		return (NULL);
+	cpy = ft_calloc(ft_strlen(s) + 1, sizeof(char));
+	i = 0;
+	while (s[i])
+	{
+		cpy[i] = s[i];
+	}
+	return (cpy);
+}
+
 void	ft_berror(t_shell *s)
 {
 	free(s->env);
@@ -110,4 +126,14 @@ void	ft_perror(t_shell *s)
 {
 	free(s->env);
 	perror("peror");
+}
+
+void	ft_free(char **s)
+{
+	int	i;
+
+	i = 0;
+	while (s[i])
+		free(s[i++]);
+	free(s);
 }

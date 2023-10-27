@@ -112,6 +112,7 @@ void	ft_lalloc(t_shell *s, int fun, int ver, char *l)
 	s->t[s->nb - 1].tok = ft_calloc(k + 1 , (sizeof(char)));
 	s->t[s->nb - 1].cmd = NULL;
 	s->t[s->nb - 1].pfd = 0;
+	s->t[s->nb - 1].fdin = 0;
 	s->ln = s->i;
 }
 
@@ -219,8 +220,6 @@ void	ft_tset(t_shell *s, char *l)
 int	ft_lexor(t_shell *s)
 {
 	ft_dollar(s);
-	if (!s->l)
-		return (0);
 	ft_tcount(s, s->l);
 	s->t = (t_token*)malloc(sizeof(t_token) * (s->tnb + 1));
 	s->t[s->tnb].tok = NULL;

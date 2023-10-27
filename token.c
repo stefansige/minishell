@@ -48,7 +48,7 @@ int	ft_checkred(t_shell *s)
 		return (1);
 }
 
-int	ft_setact(t_shell *s, int ver)
+int	ft_checkact(t_shell *s, int ver)
 {
 	if ((s->i == 0 || s->t[s->i + 1].tok == NULL) && ver == 3)
 	{
@@ -76,6 +76,27 @@ int	ft_setact(t_shell *s, int ver)
 	return (0);
 }
 
+int	ft_setpipe(t_shell *s)
+{
+	if (s->i == 0 || s->t[s->i + 1].tok == NULL)
+	{
+		ft_berror(s);
+		return (1);
+	}
+	s->nb = s->i;
+	s->nb--;
+	while (s->nb >= 0 && !ft_isact(s->t[s->nb].type))
+	{
+		if (s->t[s->nb].type == 1)
+		{
+			s->t[s->nb].pfd = 3;
+			s->nb = -1;
+		}
+		s->nb--;
+	}
+	s->i++;
+}
+
 int	ft_token(t_shell *s)
 {
 	s->i = 0;
@@ -92,9 +113,9 @@ int	ft_token(t_shell *s)
 				s->i++;
 			}
 		}
-		else if (ft_isact(s->t[s->i].type))
+		else if (s->t[s->i].type == 3)
 		{
-			if (ft_setact(s, s->t[s->i].type))
+			if (ft_setpipe())
 				return (0);
 		}
 		else

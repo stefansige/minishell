@@ -67,23 +67,20 @@ void	ft_setarg(t_shell *s)
 		s->t[s->i].arg[k++] = s->t[i++].tok;
 }
 
-void	ft_run(t_shell *s)
-{
-	if (s->t[s->i].)
-}
-
 void	ft_exec(t_shell *s)
 {
 	s->i = 0;
 	s->nb = 0;
-
 	while (s->t[s->i].tok)
 	{
 		if (s->t[s->i].type == 1)
 		{
 			ft_setcmd(s);
 			ft_setarg(s);
-			ft_setinput();
+			if (s->t[s->i].input != -1)
+			{
+				s->t[s->i].
+			}
 		}
 		s->i++;
 	}

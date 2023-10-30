@@ -18,14 +18,17 @@
 #include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 typedef struct s_token
 {
 	char	*tok;
 	char	*cmd;
 	char	**arg;
-	int	fdin;
-	int	pfd;
+	int	input;
+	int	output;
 	int	type;		// 1-cmd, 2-arg, 3-pipe, 4-rred, 5-lred, 6-rapp, 7-lapp, 8-singleQ 9-doubleQ 10-file
 }	t_token;
 

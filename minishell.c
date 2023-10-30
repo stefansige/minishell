@@ -111,8 +111,8 @@ void	ft_lalloc(t_shell *s, int fun, int ver, char *l)
 	}
 	s->t[s->nb - 1].tok = ft_calloc(k + 1 , (sizeof(char)));
 	s->t[s->nb - 1].cmd = NULL;
-	s->t[s->nb - 1].pfd = 0;
-	s->t[s->nb - 1].fdin = 0;
+	s->t[s->nb - 1].input = -1;
+	s->t[s->nb - 1].output = -1;
 	s->ln = s->i;
 }
 
@@ -177,7 +177,7 @@ void	ft_lset(t_shell *s, int fun, int ver, char *l)
 	int	k;
 
 	ft_lsettype(s, fun, ver);
-	if (fun <= 1) 
+	if (fun <= 1)
 		ft_iplus(s, ver);
 	else if (fun == 2)
 		ft_qplus(s, ver, l);
@@ -185,7 +185,7 @@ void	ft_lset(t_shell *s, int fun, int ver, char *l)
 	k = 0;
 	while (y < s->i)
 		s->t[s->nb - 1].tok[k++] = l[y++];
- 	s->ln = s->i;	
+ 	s->ln = s->i;
 }
 
 void	ft_tset(t_shell *s, char *l)

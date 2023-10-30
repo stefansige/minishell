@@ -116,16 +116,18 @@ char	*ft_strcpy(char *s)
 	return (cpy);
 }
 
-void	ft_berror(t_shell *s)
+int	ft_berror(t_shell *s)
 {
 	free(s->env);
 	printf("Bash error");
+	return (1);
 }
 
-void	ft_perror(t_shell *s)
+int	ft_perror(t_shell *s)
 {
 	free(s->env);
 	perror("peror");
+	return (1);
 }
 
 void	ft_free(char **s)

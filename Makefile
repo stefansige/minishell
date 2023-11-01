@@ -6,6 +6,8 @@ SRC = minishell.c	\
 	utils.c	\
 	dollar.c	\
 	token.c	\
+	exec.c	\
+	ft_split.c	\
 
 OBJ = $(SRC:.c=.o)
 

@@ -78,26 +78,29 @@ char	*ft_getenv(char **env, char *s)
 	return (ret);
 }
 
-char	*ft_strjoin(char *a, char *b)
+char	*ft_join(char *str1, char *str2)
 {
-	char		*strjoin;
-	size_t		i;
-	size_t		y;
+	char	*res;
+	int		i;
+	int		k;
 
-	if (!a || !b)
-		return (NULL);
-	strjoin = ft_calloc(ft_strlen(a) + ft_strlen(b) + 1, sizeof(char));
-	if (!strjoin)
-		return (NULL);
-	i = -1;
-	y = 0;
-	if (a)
-		while (a && a[++i])
-			strjoin[i] = a[i];
-	while (b && b[y])
-		strjoin[i++] = b[y++];
-	free(a);
-	return (strjoin);
+	i = 0;
+	k = 0;
+	res = ft_calloc(sizeof(char), (ft_strlen(str1) + ft_strlen(str2) + 2));
+	while (str1[i])
+	{
+		res[i] = str1[i];
+		i++;
+	}
+	res[i] = '/';
+	i++;
+	while (str2[k])
+	{
+		res[i] = str2[k];
+		i++;
+		k++;
+	}
+	return (res);
 }
 
 char	*ft_strcpy(char *s)
@@ -112,6 +115,7 @@ char	*ft_strcpy(char *s)
 	while (s[i])
 	{
 		cpy[i] = s[i];
+		i++;
 	}
 	return (cpy);
 }

@@ -236,7 +236,9 @@ void	ft_minishell(t_shell *s)
 		if (s->l)
 			if (ft_valid(s->l))
 				if (ft_lexor(s))
-					ft_token(s);
+					if (ft_token(s))
+						ft_exec(s);
+		free(s->l);
 	}
 }
 
@@ -278,6 +280,7 @@ void	ft_init(t_shell *s, char **env)
 	s->tnb = 0;
 	s->i = 0;
 	s->nb = 0;
+	s->import = dup(STDIN_FILENO);
 }
 
 int	main(int argc, char **argv, char **env)

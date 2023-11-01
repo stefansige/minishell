@@ -27,32 +27,42 @@ int	ft_isarg(int i)
 		return (0);
 }
 
-void	ft_setoutput(t_shell *s)
+int	ft_setoutput(t_shell *s, int ver)
 {
 	s->nb = s->i - 1;
 	while (s->nb >= 0 && s->t[s->nb].type != 3)
 	{
 		if (s->t[s->nb].type == 1)
 		{
-			s->t[s->nb].output = open()
-			return ;
+			if (ver == 1)
+				s->t[s->nb].output = open(s->t[s->i + 1].tok, O_CREAT | O_WRONLY | O_APPEND, 0644);
+			else
+				s->t[s->nb].output = open(s->t[s->i + 1].tok, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+			return (0);
 		}
 		s->nb--;
 	}
+	return (0);
 }
 
-void	ft_setinput(t_shell *s)
+int	ft_setinput(t_shell *s)
 {
+	if (s->i == 0)
+	{
+		close(s->import);
+		s->import = open(s->t[s->i + 1].tok, O_RDONLY);
+	}
 	s->nb = s->i - 1;
 	while (s->nb >= 0 && s->t[s->nb].type != 3)
 	{
 		if (s->t[s->nb].type == 1)
 		{
-			s->t[s->nb].input = ft_strcpy(s->t[s->i + 1].tok);
-			return ;
+			s->t[s->nb].input = open(s->t[s->i + 1].tok, O_RDONLY);
+			return (0);
 		}
 		s->nb--;
 	}
+	return (0);
 }
 
 int	ft_checkred(t_shell *s)
@@ -62,25 +72,22 @@ int	ft_checkred(t_shell *s)
 		if (s->t[s->i].type == 4 || s->t[s->i].type == 6)
 		{
 			if (access(s->t[s->i + 1].tok, F_OK) != 0)
-			{
-				ft_setoutput(s, 1);
-				return (0);
-			}
+				return (ft_setoutput(s, 0));
 			else if (access(s->t[s->i + 1].tok, W_OK) != 0)
 				return (ft_perror(s));
-			ft_setoutput(s, 0);
+			else if (s->t[s->i].type == 4)
+				return (ft_setoutput(s, 0));
+			else if (s->t[s->i].type == 6)
+				return (ft_setoutput(s, 1));
 		}
 		else if (s->t[s->i + 1].type == 5)
 		{
 			if (access(s->t[s->i + 1].tok, R_OK) != 0)
 				return (ft_perror(s));
-			ft_setinput(s);
+			return (ft_setinput(s));
 		}
-		s->t[s->i + 1].type = 10;
-		return (0);
 	}
-	else
-		return (ft_berror(s));
+	return (ft_berror(s));
 }
 
 int	ft_checkpipe(t_shell *s)

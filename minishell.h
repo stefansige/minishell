@@ -20,6 +20,7 @@
 #include <readline/history.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 #include <fcntl.h>
 
 typedef struct s_token
@@ -40,7 +41,8 @@ typedef struct s_shell
 	int	i;
 	int	nb;
 	int	ln;
-	int	pipe[2];
+	int	import;
+	int	pip[2];
 	char	*l;
 	char	*prompt;
 }	t_shell;
@@ -52,10 +54,12 @@ int				ft_isvname(char c);
 unsigned int	ft_dolen(char *s, int start);
 char			*ft_getenv(char **env, char *s);
 int				ft_token(t_shell *s);
-char			*ft_strjoin(char *a, char *b);
-void	ft_perror(t_shell *s);
-void	ft_berror(t_shell *s);
-char	*ft_strcpy(char *s);
-char	**ft_split(char *s, char c);
+char			*ft_join(char *str1, char *str2);
+int				ft_perror(t_shell *s);
+int				ft_berror(t_shell *s);
+char			*ft_strcpy(char *s);
+char			**ft_split(char *s, char c);
+void			ft_exec(t_shell *s);
+void			ft_free(char **s);
 
 #endif

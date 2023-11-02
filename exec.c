@@ -66,6 +66,65 @@ void	ft_setarg(t_shell *s)
 	s->t[s->i].arg[k] = 0;
 }
 
+int	ft_compare(char *s1, char *s2)
+{
+	int	i;
+
+	i = 0;
+	while (s1[i] && s2[i] && s1[i] == s2[i])
+		i++;
+	if (s1[i])
+		return (0);
+	return (1);
+}
+
+int	ft_isbuiltin(t_shell *s)
+{
+	if (ft_compare(s->t[s->i].tok, "echo"))
+	{
+		//ft_echo(s->arg, s->env);
+		printf("BUILTIN");
+		return (1);
+	}
+	else if (ft_compare(s->t[s->i].tok, "cd"))
+	{
+		//ft_cd(s->arg, s->env);
+		printf("BUILTIN");
+		return (1);
+	}
+	else if (ft_compare(s->t[s->i].tok, "pwd"))
+	{
+		//ft_pwd(s->arg, s->env);
+		printf("BUILTIN");
+		return (1);
+	}
+	else if (ft_compare(s->t[s->i].tok, "export"))
+	{
+		//ft_export(s->arg, s->env);
+		printf("BUILTIN");
+		return (1);
+	}
+	else if (ft_compare(s->t[s->i].tok, "unset"))
+	{
+		//ft_unset(s->arg, s->env);
+		printf("BUILTIN");
+		return (1);
+	}
+	else if (ft_compare(s->t[s->i].tok, "env"))
+	{
+		//ft_env(s->arg, s->env);
+		printf("BUILTIN");
+		return (1);
+	}
+	else if (ft_compare(s->t[s->i].tok, "exit"))
+	{
+		//ft_exit(s->arg, s->env);
+		printf("BUILTIN");
+		return (1);
+	}
+	return (0);
+}
+
 void	ft_child(t_shell *s)
 {
 	if (s->t[s->i].input != -1)
@@ -75,7 +134,9 @@ void	ft_child(t_shell *s)
 	if (s->i != s->ln)
 		dup2(s->pip[1], STDOUT_FILENO);
 	close(s->pip[0]);
-	if (execve(s->t[s->i].cmd, s->t[s->i].arg, s->env) == -1)
+	if (ft_isbuiltin(s))
+		exit(1);
+	else if (execve(s->t[s->i].cmd, s->t[s->i].arg, s->env) == -1)
 		exit(1);
 	else
 		exit(0);

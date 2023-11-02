@@ -66,7 +66,8 @@ char	*ft_getenv(char **env, char *s)
 			i = 0;
 			y++;
 		}
-		i++;
+		else
+			i++;
 	}
 	if (!env[y] || !s)
 		return (NULL);

@@ -69,6 +69,7 @@ int	ft_checkred(t_shell *s)
 {
 	if (ft_isarg(s->t[s->i + 1].type))
 	{
+		s->t[s->i + 1].type = 10;
 		if (s->t[s->i].type == 4 || s->t[s->i].type == 6)
 		{
 			if (access(s->t[s->i + 1].tok, F_OK) != 0)
@@ -80,7 +81,7 @@ int	ft_checkred(t_shell *s)
 			else if (s->t[s->i].type == 6)
 				return (ft_setoutput(s, 1));
 		}
-		else if (s->t[s->i + 1].type == 5)
+		else if (s->t[s->i].type == 5)
 		{
 			if (access(s->t[s->i + 1].tok, R_OK) != 0)
 				return (ft_perror(s));
@@ -104,7 +105,6 @@ int	ft_checkpipe(t_shell *s)
 int	ft_token(t_shell *s)
 {
 	s->i = 0;
-	s->nb = 0;
 	while (s->t[s->i].tok)
 	{
 		if (s->t[s->i].type == 0)
@@ -112,10 +112,7 @@ int	ft_token(t_shell *s)
 			s->t[s->i].type = 1;
 			s->i++;
 			while (s->t[s->i].tok && ft_isarg(s->t[s->i].type))
-			{
-				s->t[s->i].type = 2;
-				s->i++;
-			}
+				s->t[s->i++].type = 2;
 		}
 		else if (s->t[s->i].type == 3)
 		{
@@ -126,6 +123,7 @@ int	ft_token(t_shell *s)
 		{
 			if (ft_checkred(s))
 				return (0);
+			s->i++;
 		}
 		else
 			s->i++;

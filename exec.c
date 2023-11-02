@@ -62,7 +62,8 @@ void	ft_setarg(t_shell *s)
 	k = 1;
 	i = s->i + 1;
 	while (s->t[i].type == 2)
-		s->t[s->i].arg[k++] = s->t[i++].tok;
+		s->t[s->i].arg[k++] = ft_strcpy(s->t[i++].tok);
+	s->t[s->i].arg[k] = 0;
 }
 
 void	ft_child(t_shell *s)
@@ -71,7 +72,8 @@ void	ft_child(t_shell *s)
 		dup2(s->t[s->i].input, STDIN_FILENO);
 	else
 		dup2(s->import, STDIN_FILENO);
-	dup2(STDOUT_FILENO, s->pip[1]);
+	if (s->i != s->ln)
+		dup2(s->pip[1], STDOUT_FILENO);
 	close(s->pip[0]);
 	if (execve(s->t[s->i].cmd, s->t[s->i].arg, s->env) == -1)
 		exit(1);
@@ -95,29 +97,27 @@ int	ft_fork(t_shell *s)
 		wait(&status);
 		if (WEXITSTATUS(status) == 1)
 			ft_perror(s);
-		close(s->import);
 		dup2(s->pip[0], s->import);
 		close(s->pip[0]);
 	}
 	return (0);
 }
 
-void	ft_flush(t_shell *s)
+void	ft_lastcmd(t_shell *s)
 {
-	pid_t	pid;
+	int	i;
 
-	pid = fork();
-	if (pid == 0)
+	i = s->tnb - 1;
+	while (i >= 0)
 	{
-		dup2(STDOUT_FILENO, s->import);
-		exit(0);
-	}
-	else
-	{
-		wait(NULL);
+		if (s->t[i].type == 1)
+		{
+			s->ln = i;
+			return ;
+		}
+		i--;
 	}
 }
-
 
 void	ft_exec(t_shell *s)
 {
@@ -129,10 +129,10 @@ void	ft_exec(t_shell *s)
 		{
 			ft_setcmd(s);
 			ft_setarg(s);
+			ft_lastcmd(s);
 			if (ft_fork(s))
 				return ;
 		}
 		s->i++;
 	}
-	ft_flush(s);
 }

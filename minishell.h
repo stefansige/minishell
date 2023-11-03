@@ -61,5 +61,6 @@ char			*ft_strcpy(char *s);
 char			**ft_split(char *s, char c);
 void			ft_exec(t_shell *s);
 void			ft_free(char **s);
+int				ft_isbuiltin(t_shell *s, int ver);
 
 #endif

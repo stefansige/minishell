@@ -12,35 +12,34 @@
 
 #include "minishell.h"
 
-void	ft_setcmd(t_shell *s)
+int	ft_setcmd(t_shell *s)
 {
 	char	**paths;
 	char	*pth;
-	int	i;
 
+	if (ft_isbuiltin(s, 0) == 1)
+		return (0);
 	if (access(s->t[s->i].tok, F_OK) != 0)
 	{
 		pth = ft_getenv(s->env, "PATH");
 		paths = ft_split(pth, ':');
 		free(pth);
-		pth = NULL;
-		i = 0;
-		while (paths && paths[i])
+		s->nb = 0;
+		while (paths && paths[s->nb])
 		{
-			pth = ft_join(paths[i], s->t[s->i].tok);
+			pth = ft_join(paths[s->nb], s->t[s->i].tok);
 			if (access(pth, F_OK) == 0)
 			{
 				s->t[s->i].cmd = pth;
 				ft_free(paths);
-				return ;
+				return (0);
 			}
-			i++;
+			s->nb++;
 			free(pth);
 		}
 		ft_free(paths);
 	}
-	else
-		s->t[s->i].cmd = ft_strcpy(s->t[s->i].tok);
+	return (1);
 }
 
 void	ft_setarg(t_shell *s)
@@ -66,78 +65,24 @@ void	ft_setarg(t_shell *s)
 	s->t[s->i].arg[k] = 0;
 }
 
-int	ft_compare(char *s1, char *s2)
-{
-	int	i;
-
-	i = 0;
-	while (s1[i] && s2[i] && s1[i] == s2[i])
-		i++;
-	if (s1[i])
-		return (0);
-	return (1);
-}
-
-int	ft_isbuiltin(t_shell *s)
-{
-	if (ft_compare(s->t[s->i].tok, "echo"))
-	{
-		//ft_echo(s->arg, s->env);
-		printf("BUILTIN");
-		return (1);
-	}
-	else if (ft_compare(s->t[s->i].tok, "cd"))
-	{
-		//ft_cd(s->arg, s->env);
-		printf("BUILTIN");
-		return (1);
-	}
-	else if (ft_compare(s->t[s->i].tok, "pwd"))
-	{
-		//ft_pwd(s->arg, s->env);
-		printf("BUILTIN");
-		return (1);
-	}
-	else if (ft_compare(s->t[s->i].tok, "export"))
-	{
-		//ft_export(s->arg, s->env);
-		printf("BUILTIN");
-		return (1);
-	}
-	else if (ft_compare(s->t[s->i].tok, "unset"))
-	{
-		//ft_unset(s->arg, s->env);
-		printf("BUILTIN");
-		return (1);
-	}
-	else if (ft_compare(s->t[s->i].tok, "env"))
-	{
-		//ft_env(s->arg, s->env);
-		printf("BUILTIN");
-		return (1);
-	}
-	else if (ft_compare(s->t[s->i].tok, "exit"))
-	{
-		//ft_exit(s->arg, s->env);
-		printf("BUILTIN");
-		return (1);
-	}
-	return (0);
-}
-
 void	ft_child(t_shell *s)
 {
 	if (s->t[s->i].input != -1)
 		dup2(s->t[s->i].input, STDIN_FILENO);
 	else
 		dup2(s->import, STDIN_FILENO);
-	if (s->i != s->ln)
+	if (s->t[s->i].output != -1)
+		dup2(s->t[s->i].output, STDOUT_FILENO);
+	else if (s->i != s->ln)
 		dup2(s->pip[1], STDOUT_FILENO);
 	close(s->pip[0]);
-	if (ft_isbuiltin(s))
-		exit(1);
+	if (ft_isbuiltin(s, 1))
+		exit(0);
 	else if (execve(s->t[s->i].cmd, s->t[s->i].arg, s->env) == -1)
+	{
+		perror("inside");
 		exit(1);
+	}
 	else
 		exit(0);
 }
@@ -157,7 +102,10 @@ int	ft_fork(t_shell *s)
 		close(s->pip[1]);
 		wait(&status);
 		if (WEXITSTATUS(status) == 1)
-			ft_perror(s);
+		{
+			close(s->pip[0]);
+			return (ft_perror(s));
+		}
 		dup2(s->pip[0], s->import);
 		close(s->pip[0]);
 	}
@@ -184,15 +132,24 @@ void	ft_exec(t_shell *s)
 {
 	s->i = 0;
 	s->nb = 0;
+	ft_lastcmd(s);
 	while (s->t[s->i].tok)
 	{
 		if (s->t[s->i].type == 1)
 		{
-			ft_setcmd(s);
-			ft_setarg(s);
-			ft_lastcmd(s);
-			if (ft_fork(s))
-				return ;
+			if (ft_setcmd(s) == 1)
+			{
+				if (s->i != s->ln)
+					printf("%s: Command not found\n", s->t[s->i].tok);
+				else
+					printf("%s: Command not found", s->t[s->i].tok);
+			}
+			else
+			{
+				ft_setarg(s);
+				if (ft_fork(s))
+					return ;
+			}
 		}
 		s->i++;
 	}

@@ -8,6 +8,7 @@ SRC = minishell.c	\
 	token.c	\
 	exec.c	\
 	ft_split.c	\
+	ft_isbuiltin.c	\
 
 OBJ = $(SRC:.c=.o)
 

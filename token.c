@@ -81,9 +81,14 @@ int	ft_checkred(t_shell *s)
 			else if (s->t[s->i].type == 6)
 				return (ft_setoutput(s, 1));
 		}
-		else if (s->t[s->i].type == 5)
+		else if (s->t[s->i].type == 5 || s->t[s->i].type == 7)
 		{
-			if (access(s->t[s->i + 1].tok, R_OK) != 0)
+			if (s->t[s->i].type == 7)
+			{
+				ft_heredoc(s);
+				return (0);
+			}
+			else if (access(s->t[s->i + 1].tok, R_OK) != 0)
 				return (ft_perror(s));
 			return (ft_setinput(s));
 		}

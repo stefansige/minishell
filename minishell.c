@@ -79,10 +79,10 @@ void	ft_tcount(t_shell *s, char *l)
 			(!ft_ism(l[s->i]) && l[s->i + 1] == '\0') ||
 			(ft_ism(l[s->i + 1]) && !ft_ism(l[s->i])))
 				ft_iplus(s, 1);
-		else if (l[s->i] == '|' || l[s->i] == '>' || l[s->i] == '<')
-			ft_iplus(s, 1);
 		else if ((l[s->i] == '>' && l[s->i + 1] == '>') || (l[s->i] == '<' && l[s->i + 1] == '<'))
 			ft_iplus(s, 2);
+		else if (l[s->i] == '|' || l[s->i] == '>' || l[s->i] == '<')
+			ft_iplus(s, 1);
 		else if (l[s->i] == '\'')
 			ft_qplus(s, 1, l);
 		else if (l[s->i] == '\"')
@@ -109,10 +109,12 @@ void	ft_lalloc(t_shell *s, int fun, int ver, char *l)
 		k++;
 		y++;
 	}
-	s->t[s->nb - 1].tok = ft_calloc(k + 1 , (sizeof(char)));
+	s->t[s->nb - 1].tok = ft_calloc((sizeof(char)), k + 1);
 	s->t[s->nb - 1].cmd = NULL;
 	s->t[s->nb - 1].input = -1;
 	s->t[s->nb - 1].output = -1;
+	s->t[s->nb - 1].here = NULL;
+	s->t[s->nb - 1].arg = NULL;
 	s->ln = s->i;
 }
 
@@ -132,10 +134,10 @@ void	ft_tlen(t_shell *s, char *l)
 			(!ft_ism(l[s->i]) && l[s->i + 1] == '\0') ||
 			(ft_ism(l[s->i + 1]) && !ft_ism(l[s->i])))
 				ft_lalloc(s, 1, 1, l);
-		else if (l[s->i] == '|' || l[s->i] == '>' || l[s->i] == '<')
-			ft_lalloc(s, 1, 1, l);
 		else if ((l[s->i] == '>' && l[s->i + 1] == '>') || (l[s->i] == '<' && l[s->i + 1] == '<'))
 			ft_lalloc(s, 1, 2, l);
+		else if (l[s->i] == '|' || l[s->i] == '>' || l[s->i] == '<')
+			ft_lalloc(s, 1, 1, l);
 		else if (l[s->i] == '\'')
 			ft_lalloc(s, 2, 1, l);
 		else if (l[s->i] == '\"')
@@ -204,10 +206,10 @@ void	ft_tset(t_shell *s, char *l)
 			(!ft_ism(l[s->i]) && l[s->i + 1] == '\0') ||
 			(ft_ism(l[s->i + 1]) && !ft_ism(l[s->i])))
 				ft_lset(s, 0, 1, l);
-		else if (l[s->i] == '|' || l[s->i] == '>' || l[s->i] == '<')
-			ft_lset(s, 1, 1, l);
 		else if ((l[s->i] == '>' && l[s->i + 1] == '>') || (l[s->i] == '<' && l[s->i + 1] == '<'))
 			ft_lset(s, 1, 2, l);
+		else if (l[s->i] == '|' || l[s->i] == '>' || l[s->i] == '<')
+			ft_lset(s, 1, 1, l);
 		else if (l[s->i] == '\'')
 			ft_lset(s, 2, 1, l);
 		else if (l[s->i] == '\"')
@@ -251,11 +253,11 @@ char	**ft_dpcpy(char **s)
 	i = 0;
 	while (s[i])
 		i++;
-	ret = ft_calloc(i + 1, sizeof(char *));
+	ret = ft_calloc(sizeof(char *), i + 1);
 	i = 0;
 	while (s[i])
 	{
-		ret[i] = ft_calloc(ft_strlen(s[i]) + 1, sizeof(char));
+		ret[i] = ft_calloc(sizeof(char), ft_strlen(s[i]) + 1);
 		i++;
 	}
 	i = 0;

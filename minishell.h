@@ -28,6 +28,7 @@ typedef struct s_token
 	char	*tok;
 	char	*cmd;
 	char	**arg;
+	char	*here;
 	int	input;
 	int	output;
 	int	type;		// 1-cmd, 2-arg, 3-pipe, 4-rred, 5-lred, 6-rapp, 7-lapp, 8-singleQ 9-doubleQ 10-file
@@ -42,12 +43,11 @@ typedef struct s_shell
 	int	nb;
 	int	ln;
 	int	import;
-	int	pip[2];
 	char	*l;
 	char	*prompt;
 }	t_shell;
 
-void			*ft_calloc(size_t count, size_t size);
+void			*ft_calloc(size_t size, size_t count);
 unsigned int	ft_strlen(char *s);
 void			ft_dollar(t_shell *s);
 int				ft_isvname(char c);
@@ -62,5 +62,8 @@ char			**ft_split(char *s, char c);
 void			ft_exec(t_shell *s);
 void			ft_free(char **s);
 int				ft_isbuiltin(t_shell *s, int ver);
+int				ft_compare(char *s1, char *s2);
+void			ft_heredoc(t_shell *s);
+char			*ft_strjoin(char *s1, char *s2);
 
 #endif

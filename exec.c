@@ -54,7 +54,7 @@ void	ft_setarg(t_shell *s)
 		k++;
 		i++;
 	}
-	s->t[s->i].arg = ft_calloc(k + 2, sizeof(char *));
+	s->t[s->i].arg = ft_calloc(sizeof(char *), k + 2);
 	s->t[s->i].arg[0] = ft_strcpy(s->t[s->i].cmd);
 	if (k == 0)
 		return;
@@ -65,49 +65,79 @@ void	ft_setarg(t_shell *s)
 	s->t[s->i].arg[k] = 0;
 }
 
-void	ft_child(t_shell *s)
+void	ft_writein(t_shell *s, int hdpip[])
 {
-	if (s->t[s->i].input != -1)
+	int	i;
+
+	i = 0;
+	while (s->t[s->i].here && s->t[s->i].here[i])
+	{
+		write(hdpip[1], &s->t[s->i].here[i], 1);
+		i++;
+	}
+	write(hdpip[1], &s->t[s->i].here[i], 1);
+}
+
+void	ft_child(t_shell *s, int pip[], int hdpip[])
+{
+	if (s->t[s->i].input == -5)
+	{
+		close(hdpip[1]);
+		dup2(hdpip[0], STDIN_FILENO);
+	}
+	else if (s->t[s->i].input != -1)
 		dup2(s->t[s->i].input, STDIN_FILENO);
 	else
 		dup2(s->import, STDIN_FILENO);
 	if (s->t[s->i].output != -1)
 		dup2(s->t[s->i].output, STDOUT_FILENO);
 	else if (s->i != s->ln)
-		dup2(s->pip[1], STDOUT_FILENO);
-	close(s->pip[0]);
+		dup2(pip[1], STDOUT_FILENO);
+	close(pip[0]);
 	if (ft_isbuiltin(s, 1))
 		exit(0);
-	else if (execve(s->t[s->i].cmd, s->t[s->i].arg, s->env) == -1)
-	{
-		perror("inside");
+	if (execve(s->t[s->i].cmd, s->t[s->i].arg, s->env) == -1)
 		exit(1);
+	exit(0);
+}
+
+int	ft_parent(t_shell *s, int pip[], int hdpip[])
+{
+	int	status;
+
+	if (s->t[s->i].input == -5)
+	{
+		close (hdpip[0]);
+		ft_writein(s, hdpip);
+		close (hdpip[1]);
 	}
-	else
-		exit(0);
+	close(pip[1]);
+	wait(&status);
+	if (WEXITSTATUS(status) == 1)
+	{
+		close(pip[0]);
+		return (ft_perror(s));
+	}
+	dup2(pip[0], s->import);
+	close(pip[0]);
+	return (0);
 }
 
 int	ft_fork(t_shell *s)
 {
 	pid_t pid;
-	int	status;
+	int	pip[2];
+	int	hdpip[2];
 
-	if (pipe(s->pip) == -1)
+	if (pipe(pip) == -1 || pipe(hdpip) == -1)
 		return (ft_perror(s));
 	pid = fork();
 	if (pid == 0)
-		ft_child(s);
+		ft_child(s, pip, hdpip);
 	else
 	{
-		close(s->pip[1]);
-		wait(&status);
-		if (WEXITSTATUS(status) == 1)
-		{
-			close(s->pip[0]);
-			return (ft_perror(s));
-		}
-		dup2(s->pip[0], s->import);
-		close(s->pip[0]);
+		if (ft_parent(s, pip, hdpip))
+			return (1);
 	}
 	return (0);
 }

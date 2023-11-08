@@ -17,8 +17,13 @@ int	ft_setcmd(t_shell *s)
 	char	**paths;
 	char	*pth;
 
-	if (ft_isbuiltin(s, 0) == 1)
+	//if (ft_isbuiltin(s, 0) == 1)
+	//	return (0);
+	if (access(s->t[s->i].tok, F_OK) == 0)
+	{
+		s->t[s->i].cmd = ft_strcpy(s->t[s->i].tok);
 		return (0);
+	}
 	if (access(s->t[s->i].tok, F_OK) != 0)
 	{
 		pth = ft_getenv(s->env, "PATH");
@@ -42,6 +47,22 @@ int	ft_setcmd(t_shell *s)
 	return (1);
 }
 
+void	ft_setarg2(t_shell *s)
+{
+	int	i;
+	int	k;
+
+	k = 1;
+	i = s->i + 1;
+	while (s->t[i].type == 2)
+	{
+		if (s->t[i].tok[0])
+			s->t[s->i].arg[k++] = ft_strcpy(s->t[i].tok);
+		i++;
+	}
+	s->t[s->i].arg[k] = 0;
+}
+
 void	ft_setarg(t_shell *s)
 {
 	int	i;
@@ -51,18 +72,18 @@ void	ft_setarg(t_shell *s)
 	k = 0;
 	while (s->t[i].type == 2)
 	{
-		k++;
+		if (s->t[i].tok[0])
+			k++;
 		i++;
 	}
 	s->t[s->i].arg = ft_calloc(sizeof(char *), k + 2);
 	s->t[s->i].arg[0] = ft_strcpy(s->t[s->i].cmd);
 	if (k == 0)
-		return;
-	k = 1;
-	i = s->i + 1;
-	while (s->t[i].type == 2)
-		s->t[s->i].arg[k++] = ft_strcpy(s->t[i++].tok);
-	s->t[s->i].arg[k] = 0;
+	{
+		s->t[s->i].arg[1] = 0;
+		return ;
+	}
+	ft_setarg2(s);
 }
 
 void	ft_writein(t_shell *s, int hdpip[])
@@ -94,8 +115,8 @@ void	ft_child(t_shell *s, int pip[], int hdpip[])
 	else if (s->i != s->ln)
 		dup2(pip[1], STDOUT_FILENO);
 	close(pip[0]);
-	if (ft_isbuiltin(s, 1))
-		exit(0);
+	//if (ft_isbuiltin(s, 1))
+	//	exit(0);
 	if (execve(s->t[s->i].cmd, s->t[s->i].arg, s->env) == -1)
 		exit(1);
 	exit(0);

@@ -80,7 +80,7 @@ char	*ft_find(char *l, int i, char **env)
 			z++;
 			y = i;
 		}
-		else 
+		else
 		{
 			j++;
 			y++;
@@ -97,9 +97,14 @@ void	ft_dollar(t_shell *s)
 	int	i;
 
 	i = 0;
-
 	while (s->l && s->l[i])
 	{
+		if (s->l[i] == '\'')
+		{
+			i++;
+			while (s->l[i] && s->l[i] != '\'')
+				i++;
+		}
 		if (s->l[i] == '$' && ft_isvname(s->l[i + 1]))
 		{
 			s->l = ft_find(s->l, i, s->env);

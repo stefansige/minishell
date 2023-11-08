@@ -185,6 +185,16 @@ void	ft_lset(t_shell *s, int fun, int ver, char *l)
 		ft_qplus(s, ver, l);
 	y = s->ln;
 	k = 0;
+	if (fun == 2)
+	{
+		y++;
+		s->i--;
+		while (y < s->i)
+			s->t[s->nb - 1].tok[k++] = l[y++];
+		s->i++;
+ 		s->ln = s->i;
+		return ;
+	}
 	while (y < s->i)
 		s->t[s->nb - 1].tok[k++] = l[y++];
  	s->ln = s->i;

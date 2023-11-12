@@ -1,18 +1,19 @@
 #include "minishell.h"
 
-static void	ft_bzero(void *s, size_t n)
+static void ft_bzero(void *s, size_t n)
 {
-	size_t	i;
+	size_t i;
+	unsigned char *l;
 
-	if (!s)
-		return ;
+	l = (unsigned char *)s;
 	i = 0;
 	while (i < n)
 	{
-		*(char*)(s + i) = 0;
+		*(l + i) = 0;
 		i++;
 	}
 }
+
 
 void	*ft_calloc(size_t size, size_t count)
 {
@@ -71,9 +72,9 @@ char	*ft_getenv(char **env, char *s)
 	}
 	if (!env[y] || !s)
 		return (NULL);
-	i++;
 	ret = ft_calloc(sizeof(char), ft_strlen(env[y]) - i);
 	z = 0;
+	i++;
 	while (env[y][i])
 		ret[z++] = env[y][i++];
 	return (ret);

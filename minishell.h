@@ -24,6 +24,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <dirent.h>
+#include <stddef.h>
 
 typedef struct s_token
 {

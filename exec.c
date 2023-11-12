@@ -113,7 +113,7 @@ void	ft_setarg(t_shell *s)
 
 	i = s->i + 1;
 	k = 0;
-	while (s->t[i].type == 2)
+	while (s->t[i].tok && s->t[i].type == 2)
 	{
 		if (s->t[i].tok[0])
 			k++;

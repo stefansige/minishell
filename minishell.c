@@ -286,17 +286,17 @@ char	**ft_dpcpy(char **s)
 	char	**ret;
 
 	i = 0;
-	while (s[i])
+	while (s && s[i])
 		i++;
 	ret = ft_calloc(sizeof(char *), i + 1);
 	i = 0;
-	while (s[i])
+	while (s && s[i])
 	{
 		ret[i] = ft_calloc(sizeof(char), ft_strlen(s[i]) + 1);
 		i++;
 	}
 	i = 0;
-	while (s[i])
+	while (s && s[i])
 	{
 		y = 0;
 		while (s[i][y])

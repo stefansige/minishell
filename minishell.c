@@ -240,17 +240,42 @@ int	ft_lexor(t_shell *s)
 	return (1);
 }
 
+void	ft_restart(t_shell *s)
+{
+	int	i;
+
+	i = 0;
+	if (s->l)
+		free(s->l);
+	while (i < s->tnb)
+	{
+		if (s->t[i].tok)
+			free(s->t[i].tok);
+		if (s->t[i].cmd)
+			free(s->t[i].cmd);
+		if (s->t[i].arg)
+			ft_free(s->t[i].arg);
+		if (s->t[i].here)
+			free(s->t[i].here);
+		i++;
+	}
+	if (s->t)
+		free(s->t);
+}
+
 void	ft_minishell(t_shell *s)
 {
 	while (1)
 	{
+		s->l = NULL;
 		s->l = readline(s->prompt);
 		if (s->l)
 			if (ft_valid(s->l))
 				if (ft_lexor(s))
 					if (ft_token(s))
 						ft_exec(s);
-		free(s->l);
+
+		ft_restart(s);
 	}
 }
 
@@ -286,10 +311,12 @@ char	**ft_dpcpy(char **s)
 
 void	ft_init(t_shell *s, char **env)
 {
-	s->prompt = "\nstefko=>";
+	s->prompt = "\033[1;31mminishell>\033[0m";
+	s->exit = 0;
 	s->env = ft_dpcpy(env);
 	s->ln = 0;
 	s->tnb = 0;
+	s->t = NULL;
 	s->i = 0;
 	s->nb = 0;
 	s->import = dup(STDIN_FILENO);

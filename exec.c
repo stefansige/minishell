@@ -12,39 +12,82 @@
 
 #include "minishell.h"
 
-int	ft_setcmd(t_shell *s)
+int	ft_isdir(char *s)
+{
+	DIR	*dir;
+
+	dir = opendir(s);
+	if (dir != NULL)
+	{
+		closedir(dir);
+		return (1);
+	}
+	return (0);
+}
+
+int	ft_islash(char *s)
+{
+	int	i;
+
+	i = 0;
+	while (s && s[i])
+	{
+		if (s[i] == '/')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+int	ft_setcmd2(t_shell *s)
 {
 	char	**paths;
 	char	*pth;
 
-	//if (ft_isbuiltin(s, 0) == 1)
-	//	return (0);
-	if (access(s->t[s->i].tok, F_OK) == 0)
+	pth = ft_getenv(s->env, "PATH");
+	paths = ft_split(pth, ':');
+	free(pth);
+	s->nb = 0;
+	while (paths && paths[s->nb])
+	{
+		pth = ft_join(paths[s->nb], s->t[s->i].tok);
+		if (access(pth, F_OK) == 0)
+		{
+			s->t[s->i].cmd = pth;
+			ft_free(paths);
+			return (1);
+		}
+		s->nb++;
+		free(pth);
+	}
+	ft_free(paths);
+	printf("%s: command not found\n", s->t[s->i].tok);
+	s->exit = 127;
+	return (0);
+}
+
+int	ft_setcmd(t_shell *s)
+{
+	if (ft_isdir(s->t[s->i].tok))
+	{
+		printf ("bash: %s: Is a directory\n", s->t[s->i].tok);
+		s->exit = 126;
+	}
+	else if (ft_islash(s->t[s->i].tok) && access(s->t[s->i].tok, F_OK) != 0)
+	{
+		printf ("bash: %s: No such file or directory\n", s->t[s->i].tok);
+		s->exit = 127;
+	}
+	//else if (ft_isbuiltin(s, 0) == 1)
+	//	return (1);
+	else if (access(s->t[s->i].tok, F_OK) == 0)
 	{
 		s->t[s->i].cmd = ft_strcpy(s->t[s->i].tok);
-		return (0);
+		return (1);
 	}
-	if (access(s->t[s->i].tok, F_OK) != 0)
-	{
-		pth = ft_getenv(s->env, "PATH");
-		paths = ft_split(pth, ':');
-		free(pth);
-		s->nb = 0;
-		while (paths && paths[s->nb])
-		{
-			pth = ft_join(paths[s->nb], s->t[s->i].tok);
-			if (access(pth, F_OK) == 0)
-			{
-				s->t[s->i].cmd = pth;
-				ft_free(paths);
-				return (0);
-			}
-			s->nb++;
-			free(pth);
-		}
-		ft_free(paths);
-	}
-	return (1);
+	else if (access(s->t[s->i].tok, F_OK) != 0)
+		return (ft_setcmd2(s));
+	return (0);
 }
 
 void	ft_setarg2(t_shell *s)
@@ -116,9 +159,9 @@ void	ft_child(t_shell *s, int pip[], int hdpip[])
 		dup2(pip[1], STDOUT_FILENO);
 	close(pip[0]);
 	//if (ft_isbuiltin(s, 1))
-	//	exit(0);
+	//	exit(errno);
 	if (execve(s->t[s->i].cmd, s->t[s->i].arg, s->env) == -1)
-		exit(1);
+		exit(errno);
 	exit(0);
 }
 
@@ -134,12 +177,9 @@ int	ft_parent(t_shell *s, int pip[], int hdpip[])
 	}
 	close(pip[1]);
 	wait(&status);
-	if (WEXITSTATUS(status) == 1)
-	{
-		close(pip[0]);
-		return (ft_perror(s));
-	}
-	dup2(pip[0], s->import);
+	s->exit = status;
+	if (s->i != s->ln)
+		dup2(pip[0], s->import);
 	close(pip[0]);
 	return (0);
 }
@@ -190,16 +230,17 @@ void	ft_exec(t_shell *s)
 		{
 			if (ft_setcmd(s) == 1)
 			{
-				if (s->i != s->ln)
-					printf("%s: Command not found\n", s->t[s->i].tok);
+				if (access(s->t[s->i].cmd, X_OK) != 0)
+				{
+					printf("bash: %s: Permission denied\n", s->t[s->i].tok);
+					s->exit = 126;
+				}
 				else
-					printf("%s: Command not found", s->t[s->i].tok);
-			}
-			else
-			{
-				ft_setarg(s);
-				if (ft_fork(s))
-					return ;
+				{
+					ft_setarg(s);
+					if (ft_fork(s))
+						return ;
+				}
 			}
 		}
 		s->i++;

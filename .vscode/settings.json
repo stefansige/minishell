@@ -3,5 +3,6 @@
 	"files.associations": {
 		"readline.h": "c",
 		"minishell.h": "c",
+		"history.h": "c"
 	}
 }

@@ -9,7 +9,7 @@ static char	**freetab(char **arr)
 		free(arr[i++]);
 	if (arr)
 		free(arr);
-	return (0);
+	return (NULL);
 }
 
 static int	word_count(const char *s, char c)
@@ -19,12 +19,15 @@ static int	word_count(const char *s, char c)
 
 	if (!s || !s[0])
 		return (0);
-	i = -1;
+	i = 0;
 	count = 0;
-	while (s[++i])
+	while (s && s[i])
+	{
 		if ((s[i] != c && s[i + 1] == c)
 			|| (s[i] != c && s[i + 1] == '\0'))
 			count++;
+		i++;
+	}
 	return (count);
 }
 

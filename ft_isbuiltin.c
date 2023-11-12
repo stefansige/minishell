@@ -18,9 +18,8 @@ int	ft_isbuiltin3(t_shell *s, int ver)
 {
 	if (ft_compare(s->t[s->i].tok, "exit"))
 	{
-		if (ver == 1)//ft_exit(s->arg, s->env);
-			if (printf("BUILTIN") == -1)
-				exit(1);
+		if (ver == 1)
+			//ft_exit(s->arg, s->env);
 		return (1);
 	}
 	return (0);
@@ -30,52 +29,48 @@ int	ft_isbuiltin2(t_shell *s, int ver)
 {
 	if (ft_compare(s->t[s->i].tok, "export"))
 	{
-		if (ver == 1)//ft_export(s->arg, s->env);
-			if (printf("BUILTIN") == -1)
-				exit(1);
+		if (ver == 1)
+			//ft_export(s->arg, s->env);
 		return (1);
 	}
 	else if (ft_compare(s->t[s->i].tok, "unset"))
 	{
-		if (ver == 1)//ft_unset(s->arg, s->env);
-			if (printf("BUILTIN") == -1)
-				exit(1);
+		if (ver == 1)
+			//ft_unset(s->arg, s->env)
 		return (1);
 	}
 	else if (ft_compare(s->t[s->i].tok, "env"))
 	{
-		if (ver == 1)//ft_env(s->arg, s->env);
-			if (printf("BUILTIN") == -1)
-				exit(1);
+		if (ver == 1)
+		//	ft_env(s->arg, s->env)
 		return (1);
 	}
 	else
 		return (ft_isbuiltin3(s, ver));
+	return (0);
 }
 
 int	ft_isbuiltin(t_shell *s, int ver)
 {
 	if (ft_compare(s->t[s->i].tok, "echo"))
 	{
-		if (ver == 1)//ft_echo(s->arg, s->env);
-			if (printf("BUILTIN") == -1)
-				exit(1);
+		if (ver == 1)
+			//ft_echo(s->arg, s->env);
 		return (1);
 	}
 	else if (ft_compare(s->t[s->i].tok, "cd"))
 	{
-		if (ver == 1)//ft_cd(s->arg, s->env);
-			if (printf("BUILTIN") == -1)
-				exit(1);
+		if (ver == 1)
+			//ft_cd(s->arg, s->env);
 		return (1);
 	}
 	else if (ft_compare(s->t[s->i].tok, "pwd"))
 	{
-		if (ver == 1)//ft_pwd(s->arg, s->env);
-			if (printf("BUILTIN") == -1)
-				exit(1);
+		if (ver == 1)
+			//ft_pwd(s->arg, s->env);
 		return (1);
 	}
 	else
 		return (ft_isbuiltin2(s, ver));
+	return (0);
 }

@@ -22,6 +22,8 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+#include <errno.h>
+#include <dirent.h>
 
 typedef struct s_token
 {
@@ -29,22 +31,23 @@ typedef struct s_token
 	char	*cmd;
 	char	**arg;
 	char	*here;
-	int	input;
-	int	output;
-	int	type;		// 1-cmd, 2-arg, 3-pipe, 4-rred, 5-lred, 6-rapp, 7-lapp, 8-singleQ 9-doubleQ 10-file
+	int		input;
+	int		output;
+	int		type;		// 1-cmd, 2-arg, 3-pipe, 4-rred, 5-lred, 6-rapp, 7-lapp, 8-singleQ 9-doubleQ 10-file
 }	t_token;
 
 typedef struct s_shell
 {
-	char	**env;
-	t_token	*t;
-	int	tnb;
-	int	i;
-	int	nb;
-	int	ln;
-	int	import;
-	char	*l;
-	char	*prompt;
+	char			**env;
+	t_token			*t;
+	int				tnb;
+	int				i;
+	unsigned int	exit;
+	int				nb;
+	int				ln;
+	int				import;
+	char			*l;
+	char			*prompt;
 }	t_shell;
 
 void			*ft_calloc(size_t size, size_t count);

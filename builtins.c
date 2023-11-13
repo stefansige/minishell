@@ -6,7 +6,7 @@
 /*   By: azennari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 17:53:27 by azennari          #+#    #+#             */
-/*   Updated: 2023/11/13 17:55:54 by azennari         ###   ########.fr       */
+/*   Updated: 2023/11/13 18:10:10 by azennari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,21 +52,21 @@ void	ft_cd(char *arg, char **env)
 	//If PWD is unset, OLDPWD gets unset here. If OLDPWD is unset, is not reset, and PWD behaves regularly. If both are unset, nothing happens
 }
 
-void	ft_export(char *arg, char **env)
+void	ft_export(char **arg, char **env)
 {
-	//Necessary to realloc env and provide it with the new var
+	//Necessary to realloc env and provide it with the new vars
 	//Maybe use some existing reallocating funcs, either default or some coded here
 	//Still in the "change the env" family. May use some common subfunctions
-	//Planning the subfunctions early and make the small and well subdivided should save us work
+	//Planning the subfunctions early and make them small and well subdivided should save us work
 	//Required a var finder to locate eventual already existing var with same name and replace it. Still have to reallocate though
 }
 
-void	ft_unset(char *arg, char **env)
+void	ft_unset(char **arg, char **env)
 {
-	//Necessary to realloc env once found and scrapped the target
+	//Necessary to realloc env once found and scrapped the args
 	//Still in the "change the env" family. May use some common subfunctions
-	//Planning the subfunctions early and make the small and well subdivided should save us work
-	//No need to use option, so no discrimination about the nature of the unset content
+	//Planning the subfunctions early and make them small and well subdivided should save us work
+	//No need to use options, so no discrimination about the nature of the unset content
 	//If it messes up when misused it's not a problem, as the original unset can really mess up stuff too
 }
 

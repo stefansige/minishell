@@ -306,6 +306,7 @@ char	**ft_dpcpy(char **s)
 		}
 		i++;
 	}
+	ret[i] = NULL;
 	return (ret);
 }
 

@@ -65,8 +65,36 @@ int	ft_setinput(t_shell *s)
 	return (0);
 }
 
+void	ft_disable(t_shell *s)
+{
+	int	i;
+
+	i = s->i - 1;
+	while (i >= 0 && s->t[i].type != 3)
+	{
+		if (s->t[i].type == 1)
+		{
+			s->t[i].type = -1;
+			return ;
+		}
+		i--;
+	}
+}
+
 int	ft_checkred(t_shell *s)
 {
+	if (!s->t[s->i + 1].tok)
+	{
+		printf("bash: syntax error near unexpected token `newline'\n");
+		s->exit = 2;
+		return (1);
+	}
+	if (ft_isact(s->t[s->i + 1].type))
+	{
+		printf("bash: syntax error near unexpected token `%s'\n", s->t[s->i + 1].tok);
+		s->exit = 2;
+		return (1);
+	}
 	if (ft_isarg(s->t[s->i + 1].type))
 	{
 		s->t[s->i + 1].type = 10;
@@ -75,7 +103,12 @@ int	ft_checkred(t_shell *s)
 			if (access(s->t[s->i + 1].tok, F_OK) != 0)
 				return (ft_setoutput(s, 0));
 			else if (access(s->t[s->i + 1].tok, W_OK) != 0)
-				return (ft_perror(s));
+			{
+				printf("bash: %s: Permission denied\n", s->t[s->i + 1].tok);
+				s->exit = 1;
+				ft_disable(s);
+				return (0);
+			}
 			else if (s->t[s->i].type == 4)
 				return (ft_setoutput(s, 0));
 			else if (s->t[s->i].type == 6)
@@ -89,18 +122,30 @@ int	ft_checkred(t_shell *s)
 				return (0);
 			}
 			else if (access(s->t[s->i + 1].tok, R_OK) != 0)
-				return (ft_perror(s));
+			{
+				printf("bash: %s: Permission denied\n", s->t[s->i + 1].tok);
+				s->exit = 1;
+				ft_disable(s);
+				return (0);
+			}
 			return (ft_setinput(s));
 		}
 	}
-	return (ft_berror(s));
+	return (0);
 }
 
 int	ft_checkpipe(t_shell *s)
 {
-	if (s->i == 0 || s->t[s->i + 1].tok == NULL)
+	if (s->i == 0 || s->t[s->i + 1].type == 3)
 	{
-		ft_berror(s);
+		printf("bash: syntax error near unexpected token `|'\n");
+		s->exit = 2;
+		return (1);
+	}
+	else if (!s->t[s->i + 1].tok)
+	{
+		printf("bash: syntax error near unexpected token `newline'\n");
+		s->exit = 2;
 		return (1);
 	}
 	s->i++;
@@ -112,23 +157,26 @@ int	ft_token(t_shell *s)
 	s->i = 0;
 	while (s->t[s->i].tok)
 	{
-		if (s->t[s->i].type == 0)
+		if (s->t[s->i].type == 0 && (s->i == 0 || s->t[s->i - 1].type == 3))
 		{
 			s->t[s->i].type = 1;
 			s->i++;
-			while (s->t[s->i].tok && ft_isarg(s->t[s->i].type))
-				s->t[s->i++].type = 2;
+			while (s->t[s->i].tok && s->t[s->i].type != 3)
+			{
+				if (s->t[s->i].type >= 4 && s->t[s->i].type <= 7)
+				{
+					if (ft_checkred(s))
+						return (0);
+					s->i += 2;
+				}
+				else
+					s->t[s->i++].type = 2;
+			}
 		}
 		else if (s->t[s->i].type == 3)
 		{
 			if (ft_checkpipe(s))
 				return (0);
-		}
-		else if (s->t[s->i].type >= 4 && s->t[s->i].type <= 7)
-		{
-			if (ft_checkred(s))
-				return (0);
-			s->i++;
 		}
 		else
 			s->i++;

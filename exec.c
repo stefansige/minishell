@@ -97,9 +97,9 @@ void	ft_setarg2(t_shell *s)
 
 	k = 1;
 	i = s->i + 1;
-	while (s->t[i].type == 2)
+	while (s->t[i].tok && s->t[i].type != 3)
 	{
-		if (s->t[i].tok[0])
+		if (s->t[i].tok[0] && s->t[i].type == 2)
 			s->t[s->i].arg[k++] = ft_strcpy(s->t[i].tok);
 		i++;
 	}
@@ -113,9 +113,9 @@ void	ft_setarg(t_shell *s)
 
 	i = s->i + 1;
 	k = 0;
-	while (s->t[i].tok && s->t[i].type == 2)
+	while (s->t[i].tok && s->t[i].type != 3)
 	{
-		if (s->t[i].tok[0])
+		if (s->t[i].tok[0] && s->t[i].type == 2)
 			k++;
 		i++;
 	}
@@ -159,7 +159,7 @@ void	ft_child(t_shell *s, int pip[], int hdpip[])
 		dup2(pip[1], STDOUT_FILENO);
 	close(pip[0]);
 	//if (ft_isbuiltin(s, 1))
-	//	exit(errno);
+	//	exit(1);
 	if (execve(s->t[s->i].cmd, s->t[s->i].arg, s->env) == -1)
 		exit(errno);
 	exit(0);
@@ -177,7 +177,7 @@ int	ft_parent(t_shell *s, int pip[], int hdpip[])
 	}
 	close(pip[1]);
 	wait(&status);
-	s->exit = status;
+	s->exit = WEXITSTATUS(status);
 	if (s->i != s->ln)
 		dup2(pip[0], s->import);
 	close(pip[0]);
@@ -191,7 +191,10 @@ int	ft_fork(t_shell *s)
 	int	hdpip[2];
 
 	if (pipe(pip) == -1 || pipe(hdpip) == -1)
-		return (ft_perror(s));
+	{
+		perror("pipe:");
+		return (1);
+	}
 	pid = fork();
 	if (pid == 0)
 		ft_child(s, pip, hdpip);

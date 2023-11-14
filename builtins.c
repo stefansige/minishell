@@ -6,17 +6,18 @@
 /*   By: azennari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 17:53:27 by azennari          #+#    #+#             */
-/*   Updated: 2023/11/13 18:10:10 by azennari         ###   ########.fr       */
+/*   Updated: 2023/11/14 19:35:28 by azennari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_echo(char **arg)
+void	ft_echo(char **arg, char **env)
 {
 	bool	flag;
 	int		i;
 
+	(void)env;
 	flag = false;
 	i = 0;
 	if (!(strcmp(*arg[i], "-n")))
@@ -44,13 +45,28 @@ void	ft_pwd()
 	printf("%s\n", pwd);
 }
 
-void	ft_cd(char *arg, char **env)
+void	ft_cd(char **arg, char **env)
 {
+	if (*arg[1])
+	{
+		printf("cd: too many arguments");
+	}
+	else
+	{
+		if (ft_isdir(arg))
+		{
+			chdir(arg);
+		}
+		else
+		{
+			printf("cd: %s: No such file or directory", *arg[0]);
+		}
+	}
+}
 	//The function chdir does most of the job, but doesn't do anything to env by itself
 	//Need to change OLDPWD and PWD. This is where other functions comes in play
 	//OLDPWD becomes as PWD was before the passage, then PWD becomes the new one. Not further record is kept, no oldoldpwd or change history
 	//If PWD is unset, OLDPWD gets unset here. If OLDPWD is unset, is not reset, and PWD behaves regularly. If both are unset, nothing happens
-}
 
 void	ft_export(char **arg, char **env)
 {

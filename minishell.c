@@ -231,6 +231,7 @@ void	ft_tset(t_shell *s, char *l)
 
 int	ft_lexor(t_shell *s)
 {
+	add_history(s->l);
 	ft_dollar(s);
 	ft_tcount(s, s->l);
 	s->t = (t_token*)malloc(sizeof(t_token) * (s->tnb + 1));
@@ -263,6 +264,34 @@ void	ft_restart(t_shell *s)
 		free(s->t);
 }
 
+void	ft_checkexit(t_shell *s)
+{
+	int	i;
+
+	if (ft_compare(s->t[0].tok, "exit"))
+	{
+		i = 0;
+		while (s->t[i].tok)
+		{
+			if (s->t[i].type == 3)
+				return;
+			i++;
+		}
+		i = s->exit;
+		printf("exit\n");
+		if (s->t[1].tok && s->t[1].type == 2)
+			i = ft_atoi(s->t[1].tok);
+		if (i == -1010101)
+		{
+			printf ("bash: exit: %s: numeric argument required\n", s->t[1].tok);
+			i = 2;
+		}
+		ft_restart(s);
+		rl_clear_history();
+		exit (i);
+	}
+}
+
 void	ft_minishell(t_shell *s)
 {
 	while (1)
@@ -273,7 +302,10 @@ void	ft_minishell(t_shell *s)
 			if (ft_valid(s->l))
 				if (ft_lexor(s))
 					if (ft_token(s))
+					{
+						ft_checkexit(s);
 						ft_exec(s);
+					}
 
 		ft_restart(s);
 	}
@@ -310,8 +342,17 @@ char	**ft_dpcpy(char **s)
 	return (ret);
 }
 
+void	ft_ctrlc()
+{
+	printf("\n");
+    rl_on_new_line();
+	rl_replace_line("", 0);
+    rl_redisplay();
+}
+
 void	ft_init(t_shell *s, char **env)
 {
+	signal(SIGINT, ft_ctrlc);
 	s->prompt = "\033[1;31mminishell>\033[0m";
 	s->exit = 0;
 	s->env = ft_dpcpy(env);

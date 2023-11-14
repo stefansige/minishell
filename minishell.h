@@ -69,5 +69,8 @@ int				ft_isbuiltin(t_shell *s, int ver);
 int				ft_compare(char *s1, char *s2);
 void			ft_heredoc(t_shell *s);
 char			*ft_strjoin(char *s1, char *s2);
+int				ft_isarg(int i);
+int				ft_atoi(const char *nptr);
+int				ft_isdir(char *s);
 
 #endif

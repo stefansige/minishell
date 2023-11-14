@@ -121,6 +121,13 @@ int	ft_checkred(t_shell *s)
 				ft_heredoc(s);
 				return (0);
 			}
+			if (access(s->t[s->i + 1].tok, R_OK) != 0)
+			{
+				printf("bash: %s: No such file or directory\n", s->t[s->i + 1].tok);
+				s->exit = 1;
+				ft_disable(s);
+				return (0);
+			}
 			else if (access(s->t[s->i + 1].tok, R_OK) != 0)
 			{
 				printf("bash: %s: Permission denied\n", s->t[s->i + 1].tok);
@@ -172,6 +179,12 @@ int	ft_token(t_shell *s)
 				else
 					s->t[s->i++].type = 2;
 			}
+		}
+		else if (s->t[s->i].type >= 4 && s->t[s->i].type <= 7)
+		{
+			if (ft_checkred(s))
+				return (0);
+			s->i += 2;
 		}
 		else if (s->t[s->i].type == 3)
 		{

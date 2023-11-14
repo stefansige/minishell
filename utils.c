@@ -156,3 +156,37 @@ void	ft_free(char **s)
 		free(s[i++]);
 	free(s);
 }
+
+static int	ft_isspace(const char c)
+{
+	if (c == 32 || (c >= '\t' && c <= '\r'))
+		return (1);
+	return (0);
+}
+
+int	ft_atoi(const char *nptr)
+{
+	int	n;
+	int	sign;
+
+	n = 0;
+	sign = 1;
+	while (ft_isspace(*nptr) == 1)
+		nptr++;
+	if (*nptr == '-')
+	{
+		sign = -1;
+		nptr++;
+	}
+	else if (*nptr == '+')
+		nptr++;
+	while (*nptr)
+	{
+		if (!(*nptr >= '0' && *nptr <= '9'))
+			return (-1010101);
+		n *= 10;
+		n += (*nptr - 48);
+		nptr++;
+	}
+	return (n * sign);
+}

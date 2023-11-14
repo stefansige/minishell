@@ -39,6 +39,26 @@ int	ft_islash(char *s)
 	return (0);
 }
 
+void	ft_setempty(t_shell *s)
+{
+	int	i;
+
+	i = s->i + 1;
+	while (s->t[i].tok)
+	{
+		if (s->t[i].type == 1)
+		{
+			if (s->t[i].input == -1)
+			{
+				s->t[i].input = -5;
+				s->t[i].here = ft_calloc(sizeof(char), 1);
+			}
+			return ;
+		}
+		i++;
+	}
+}
+
 int	ft_setcmd2(t_shell *s)
 {
 	char	**paths;
@@ -62,6 +82,7 @@ int	ft_setcmd2(t_shell *s)
 	}
 	ft_free(paths);
 	printf("%s: command not found\n", s->t[s->i].tok);
+	ft_setempty(s);
 	s->exit = 127;
 	return (0);
 }
@@ -144,6 +165,8 @@ void	ft_writein(t_shell *s, int hdpip[])
 
 void	ft_child(t_shell *s, int pip[], int hdpip[])
 {
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	if (s->t[s->i].input == -5)
 	{
 		close(hdpip[1]);

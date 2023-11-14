@@ -42,7 +42,7 @@ int	ft_isbuiltin2(t_shell *s, int ver)
 	else if (ft_compare(s->t[s->i].tok, "env"))
 	{
 		if (ver == 1)
-		//	ft_env(s->arg, s->env)
+			ft_env(s->t[s->i].arg, s->env);
 		return (1);
 	}
 	else
@@ -55,7 +55,7 @@ int	ft_isbuiltin(t_shell *s, int ver)
 	if (ft_compare(s->t[s->i].tok, "echo"))
 	{
 		if (ver == 1)
-			//ft_echo(s->arg, s->env);
+			ft_echo(s->t[s->i].arg, s->env);
 		return (1);
 	}
 	else if (ft_compare(s->t[s->i].tok, "cd"))
@@ -67,7 +67,7 @@ int	ft_isbuiltin(t_shell *s, int ver)
 	else if (ft_compare(s->t[s->i].tok, "pwd"))
 	{
 		if (ver == 1)
-			//ft_pwd(s->arg, s->env);
+			ft_pwd(s->t[s->i].arg, s->env);
 		return (1);
 	}
 	else

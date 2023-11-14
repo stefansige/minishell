@@ -36,10 +36,12 @@ void	ft_echo(char **arg, char **env)
 		printf("\n");
 }
 
-void	ft_pwd()
+void	ft_pwd(char **arg, char **env)
 {
 	char	*pwd;
 
+	void(arg);
+	void(env);
 	pwd = getcwd(NULL, 0);
 	getcwd(pwd, sizeof(pwd));
 	printf("%s\n", pwd);
@@ -86,7 +88,7 @@ void	ft_unset(char **arg, char **env)
 	//If it messes up when misused it's not a problem, as the original unset can really mess up stuff too
 }
 
-void	ft_env(char **env)
+void	ft_env(char **arg, char **env)
 {
 	int	i;
 

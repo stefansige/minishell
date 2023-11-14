@@ -25,6 +25,7 @@
 #include <errno.h>
 #include <dirent.h>
 #include <stddef.h>
+#include <stdbool.h>
 
 typedef struct s_token
 {
@@ -72,5 +73,8 @@ char			*ft_strjoin(char *s1, char *s2);
 int				ft_isarg(int i);
 int				ft_atoi(const char *nptr);
 int				ft_isdir(char *s);
+void			ft_echo(char **arg, char **env);
+void			ft_pwd(char **arg, char **env);
+void			ft_env(char **arg, char **env);
 
 #endif

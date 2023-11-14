@@ -99,8 +99,8 @@ int	ft_setcmd(t_shell *s)
 		printf ("bash: %s: No such file or directory\n", s->t[s->i].tok);
 		s->exit = 127;
 	}
-	//else if (ft_isbuiltin(s, 0) == 1)
-	//	return (1);
+	else if (ft_isbuiltin(s, 0) == 1)
+		return (1);
 	else if (access(s->t[s->i].tok, F_OK) == 0)
 	{
 		s->t[s->i].cmd = ft_strcpy(s->t[s->i].tok);

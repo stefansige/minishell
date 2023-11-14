@@ -53,10 +53,10 @@ unsigned int	ft_dolen(char *s, int start)
 
 char	*ft_getenv(char **env, char *s)
 {
-	char	*ret;
-	int		i;
-	int		y;
-	int		z;
+	char				*ret;
+	unsigned int		i;
+	int					y;
+	int					z;
 
 	i = 0;
 	y = 0;
@@ -70,7 +70,7 @@ char	*ft_getenv(char **env, char *s)
 		else
 			i++;
 	}
-	if (!env[y] || !s)
+	if (!env[y] || !s || i != ft_strlen(s))
 		return (NULL);
 	ret = ft_calloc(sizeof(char), ft_strlen(env[y]) - i);
 	z = 0;
@@ -151,9 +151,15 @@ void	ft_free(char **s)
 {
 	int	i;
 
+	if (s == NULL)
+		return;
 	i = 0;
 	while (s[i])
-		free(s[i++]);
+	{
+		free(s[i]);
+		i++;
+	}
+	free(s[i]);
 	free(s);
 }
 

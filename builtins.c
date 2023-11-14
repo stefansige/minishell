@@ -6,7 +6,7 @@
 /*   By: azennari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 17:53:27 by azennari          #+#    #+#             */
-/*   Updated: 2023/11/14 19:35:28 by azennari         ###   ########.fr       */
+/*   Updated: 2023/11/14 19:56:59 by azennari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,28 +47,41 @@ void	ft_pwd(char **arg, char **env)
 	printf("%s\n", pwd);
 }
 
+void	ft_set_cd(char **env)
+{
+	char	*oldpwd;
+
+	oldpwd = ft_getenv("PWD");
+	if (ft_getenv("OLDPWD"))
+	{
+		if (oldpwd)
+			ft_set_oldpwd(env, oldpwd);
+		else
+			//unset oldpwd
+	}
+	if (oldpwd)
+		ft_set_pwd(env);
+}
+
 void	ft_cd(char **arg, char **env)
 {
 	if (*arg[1])
-	{
 		printf("cd: too many arguments");
-	}
 	else
 	{
 		if (ft_isdir(arg))
 		{
 			chdir(arg);
+			ft_set_cd(env);
 		}
 		else
-		{
 			printf("cd: %s: No such file or directory", *arg[0]);
-		}
 	}
 }
-	//The function chdir does most of the job, but doesn't do anything to env by itself
-	//Need to change OLDPWD and PWD. This is where other functions comes in play
-	//OLDPWD becomes as PWD was before the passage, then PWD becomes the new one. Not further record is kept, no oldoldpwd or change history
-	//If PWD is unset, OLDPWD gets unset here. If OLDPWD is unset, is not reset, and PWD behaves regularly. If both are unset, nothing happens
+//The function chdir does most of the job, but doesn't do anything to env by itself
+//Need to change OLDPWD and PWD. This is where other functions comes in play
+//OLDPWD becomes as PWD was before the passage, then PWD becomes the new one. Not further record is kept, no oldoldpwd or change history
+//If PWD is unset, OLDPWD gets unset here. If OLDPWD is unset, is not reset, and PWD behaves regularly. If both are unset, nothing happens
 
 void	ft_export(char **arg, char **env)
 {
@@ -92,6 +105,7 @@ void	ft_env(char **arg, char **env)
 {
 	int	i;
 
+	(void)arg;
 	i = -1;
 	while (env[++i])
 		printf("%s\n", env[i]);

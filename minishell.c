@@ -352,7 +352,6 @@ void	ft_ctrlc()
 
 void	ft_init(t_shell *s, char **env)
 {
-	signal(SIGINT, ft_ctrlc);
 	s->prompt = "\033[1;31mminishell>\033[0m";
 	s->exit = 0;
 	s->env = ft_dpcpy(env);

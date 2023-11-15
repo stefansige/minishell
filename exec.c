@@ -120,7 +120,7 @@ void	ft_setarg2(t_shell *s)
 	i = s->i + 1;
 	while (s->t[i].tok && s->t[i].type != 3)
 	{
-		if (s->t[i].tok[0] && s->t[i].type == 2)
+		if (s->t[i].tok && s->t[i].type == 2)
 			s->t[s->i].arg[k++] = ft_strcpy(s->t[i].tok);
 		i++;
 	}
@@ -136,7 +136,7 @@ void	ft_setarg(t_shell *s)
 	k = 0;
 	while (s->t[i].tok && s->t[i].type != 3)
 	{
-		if (s->t[i].tok[0] && s->t[i].type == 2)
+		if (s->t[i].tok && s->t[i].type == 2)
 			k++;
 		i++;
 	}

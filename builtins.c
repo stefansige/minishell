@@ -6,7 +6,7 @@
 /*   By: azennari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 17:53:27 by azennari          #+#    #+#             */
-/*   Updated: 2023/11/14 19:56:59 by azennari         ###   ########.fr       */
+/*   Updated: 2023/11/15 19:00:51 by azennari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,61 @@ void	ft_pwd(char **arg, char **env)
 	printf("%s\n", pwd);
 }
 
+int	ft_getenv_n(char **env, char *s)
+{
+	int	i;
+	int	j;
+
+	while (s && s[i] && env[j] && env[j][i])
+	{
+		if (env[j][i] != s[i])
+		{
+			i = 0;
+			j++;
+		}
+		else
+			i++;
+	}
+	if (!env[j] || !s || i != ft_strlen(s))
+		return (NULL);
+	return (j);
+}
+
+char	*ft_rereset(char *varn, char *varc)
+{
+	char	*re;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	re = NULL;
+	re = ft_calloc(sizeof(char), (ft_strlen(varn) + ft_strlen(varc) + 2));
+	while (varn && varn[i])
+	{
+		re[i] = varn[i];
+		i++;
+	}
+	re[i++] = '=';
+	while (varc && varc[j])
+	{
+		re[i] = varc[j];
+		i++;
+		j++;
+	}
+	re[i] = '\0';
+	return (re);
+}
+
+void	ft_reset(char **env, char *varn, char *varc)
+{
+	int	p;
+
+	p = ft_getenv_n(env, varn);
+	free(env[p]);
+	env[p] = ft_rereset(varn, varc);
+}
+
 void	ft_set_cd(char **env)
 {
 	char	*oldpwd;
@@ -55,33 +110,29 @@ void	ft_set_cd(char **env)
 	if (ft_getenv("OLDPWD"))
 	{
 		if (oldpwd)
-			ft_set_oldpwd(env, oldpwd);
+			ft_reset(env, "OLDPWD", oldpwd);
 		else
 			//unset oldpwd
 	}
 	if (oldpwd)
-		ft_set_pwd(env);
+		ft_reset(env, "PWD", getcwd(NULL, 0));
 }
 
 void	ft_cd(char **arg, char **env)
 {
-	if (*arg[1])
+	if (arg[1])
 		printf("cd: too many arguments");
 	else
 	{
-		if (ft_isdir(arg))
+		if (ft_isdir(arg[i]))
 		{
-			chdir(arg);
+			chdir(arg[i]);
 			ft_set_cd(env);
 		}
 		else
 			printf("cd: %s: No such file or directory", *arg[0]);
 	}
 }
-//The function chdir does most of the job, but doesn't do anything to env by itself
-//Need to change OLDPWD and PWD. This is where other functions comes in play
-//OLDPWD becomes as PWD was before the passage, then PWD becomes the new one. Not further record is kept, no oldoldpwd or change history
-//If PWD is unset, OLDPWD gets unset here. If OLDPWD is unset, is not reset, and PWD behaves regularly. If both are unset, nothing happens
 
 void	ft_export(char **arg, char **env)
 {

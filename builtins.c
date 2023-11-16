@@ -6,7 +6,7 @@
 /*   By: azennari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 17:53:27 by azennari          #+#    #+#             */
-/*   Updated: 2023/11/15 19:00:51 by azennari         ###   ########.fr       */
+/*   Updated: 2023/11/16 19:09:20 by azennari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ char	*ft_rereset(char *varn, char *varc)
 	i = 0;
 	j = 0;
 	re = NULL;
-	re = ft_calloc(sizeof(char), (ft_strlen(varn) + ft_strlen(varc) + 2));
+	re = (char *)ft_calloc(sizeof(char), (ft_strlen(varn) + ft_strlen(varc) + 2));
 	while (varn && varn[i])
 	{
 		re[i] = varn[i];
@@ -106,8 +106,8 @@ void	ft_set_cd(char **env)
 {
 	char	*oldpwd;
 
-	oldpwd = ft_getenv("PWD");
-	if (ft_getenv("OLDPWD"))
+	oldpwd = ft_getenv(env, "PWD");
+	if (ft_getenv(env, "OLDPWD"))
 	{
 		if (oldpwd)
 			ft_reset(env, "OLDPWD", oldpwd);
@@ -134,22 +134,78 @@ void	ft_cd(char **arg, char **env)
 	}
 }
 
+void	ft_export_arg_len(char *arg, int *nlen, int *clen)
+{
+	int	i;
+
+	i = 0;
+	while (arg[i] && arg[i] != '=')
+		i++;
+	nlen[0] = i;
+	while (arg[i])
+		i++;
+	clen[0] = i - nlen[0] - 1;
+}
+
+void	ft_read_export_arg(char *arg, char *varn, char *varc)
+{
+	int	i;
+	int	nlen;
+	int	clen;
+
+	i = 0;
+	ft_export_arg_len(arg, &nlen, &clen);
+	varn = (char *)ft_calloc(sizeof(char), nlen + 1);
+	varc = (char *)ft_calloc(sizeof(char), clen + 1);
+	while (i <= nlen)
+	{
+		varn[i] = arg[i];
+		i++;
+	}
+	i = 0;
+	while ((i + nlen + 1) <= clen)
+	{
+		varc[i] = arg[i + nlen + 1];
+		i++;
+	}
+}
+
+void	ft_set(char **env, char *varn, char *varc)
+{
+	char	**new_env;
+	int		envlen;
+
+	envlen = 0;
+	while (env[envlen])
+		envlen++;
+	//Allocate a new env, copy everthing inside it and add the new var
+	//Free the old env, then replace it with the already allocated and fresh new env
+}
+
 void	ft_export(char **arg, char **env)
 {
-	//Necessary to realloc env and provide it with the new vars
-	//Maybe use some existing reallocating funcs, either default or some coded here
-	//Still in the "change the env" family. May use some common subfunctions
-	//Planning the subfunctions early and make them small and well subdivided should save us work
-	//Required a var finder to locate eventual already existing var with same name and replace it. Still have to reallocate though
+	int		i;
+	char	*varn;
+	char	*varc;
+
+	i = -1;
+	while (arg[++i])
+	{
+		ft_read_export_arg(arg[i], varn, varc);
+		if (ft_getenv(env, varn) && varc)
+			ft_reset(env, varn, varc);
+		else if (varc)
+			ft_set(env, varn, varc);
+		free(varn);
+		free(varc);
+	}
 }
 
 void	ft_unset(char **arg, char **env)
 {
-	//Necessary to realloc env once found and scrapped the args
-	//Still in the "change the env" family. May use some common subfunctions
-	//Planning the subfunctions early and make them small and well subdivided should save us work
-	//No need to use options, so no discrimination about the nature of the unset content
-	//If it messes up when misused it's not a problem, as the original unset can really mess up stuff too
+	//Find the varn (variable name), then use ft_getenv_n to locate it
+	//Allocate memory for a new_env, then copy everything in two steps, one before and one after the var to unset
+	//Free the old one and replace it with the new one
 }
 
 void	ft_env(char **arg, char **env)

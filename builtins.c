@@ -6,7 +6,7 @@
 /*   By: azennari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 17:53:27 by azennari          #+#    #+#             */
-/*   Updated: 2023/11/16 19:09:20 by azennari         ###   ########.fr       */
+/*   Updated: 2023/11/17 19:23:15 by azennari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,14 +170,38 @@ void	ft_read_export_arg(char *arg, char *varn, char *varc)
 	}
 }
 
+char	*ft_strdup(char *src)
+{
+	int		i;
+	char	*dst;
+
+	i = 0;
+	while (src[i] != '\0')
+		i++;
+	dst = malloc(sizeof(char) * i + 1);
+	if (!dst)
+		return (NULL);
+	i = 0;
+	while (src[i] != '\0')
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	dst[i] = '\0';
+	return (dst);
+}
+
 void	ft_set(char **env, char *varn, char *varc)
 {
 	char	**new_env;
-	int		envlen;
+	int		i;
 
-	envlen = 0;
-	while (env[envlen])
-		envlen++;
+	i = 0;
+	while (env[i])
+		i++;
+	new_env = ft_calloc(sizeof(char *), i + 2);
+	while (env[--i])
+		new_env[i] = env[i];
 	//Allocate a new env, copy everthing inside it and add the new var
 	//Free the old env, then replace it with the already allocated and fresh new env
 }
@@ -220,5 +244,5 @@ void	ft_env(char **arg, char **env)
 
 void	ft_exit(void)
 {
-	//Even if seemingly the easiest, it can't simply be an exit as it has to not close the program when placed in a pipe
+	//No clue, really
 }

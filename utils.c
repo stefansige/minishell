@@ -1,15 +1,17 @@
 #include "minishell.h"
 
-static void ft_bzero(void *s, size_t n)
+static void	ft_bzero(void *s, size_t n)
 {
-	size_t i;
-	unsigned char *l;
+	size_t	i;
+	char	*str;
 
-	l = (unsigned char *)s;
 	i = 0;
+	str = (char*)s;
+	if (n == 0)
+		return ;
 	while (i < n)
 	{
-		*(l + i) = 0;
+		str[i] = '\0';
 		i++;
 	}
 }
@@ -17,14 +19,12 @@ static void ft_bzero(void *s, size_t n)
 
 void	*ft_calloc(size_t size, size_t count)
 {
-	void	*ptr;
+	void *ptr;
 
-	if (count == 0)
-		return (NULL);
-	ptr = (void*)malloc(count * size);
-	if (!ptr)
-		return (NULL);
-	ft_bzero(ptr, count);
+	ptr = malloc(count * size);
+	if (ptr == NULL)
+		return (ptr);
+	ft_bzero(ptr, size * count);
 	return (ptr);
 }
 

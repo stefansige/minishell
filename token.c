@@ -19,14 +19,6 @@ int	ft_isact(int n)
 	return (0);
 }
 
-int	ft_isarg(int i)
-{
-	if (i == 0 || i == 8 || i == 9)
-		return (1);
-	else
-		return (0);
-}
-
 int	ft_setoutput(t_shell *s, int ver)
 {
 	s->nb = s->i - 1;
@@ -95,7 +87,7 @@ int	ft_checkred(t_shell *s)
 		s->exit = 2;
 		return (1);
 	}
-	if (ft_isarg(s->t[s->i + 1].type))
+	if (s->t[s->i + 1].type == 0)
 	{
 		s->t[s->i + 1].type = 10;
 		if (s->t[s->i].type == 4 || s->t[s->i].type == 6)

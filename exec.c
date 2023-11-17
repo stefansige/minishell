@@ -39,26 +39,6 @@ int	ft_islash(char *s)
 	return (0);
 }
 
-void	ft_setempty(t_shell *s)
-{
-	int	i;
-
-	i = s->i + 1;
-	while (s->t[i].tok)
-	{
-		if (s->t[i].type == 1)
-		{
-			if (s->t[i].input == -1)
-			{
-				s->t[i].input = -5;
-				s->t[i].here = ft_calloc(sizeof(char), 1);
-			}
-			return ;
-		}
-		i++;
-	}
-}
-
 int	ft_setcmd2(t_shell *s)
 {
 	char	**paths;
@@ -68,7 +48,7 @@ int	ft_setcmd2(t_shell *s)
 	paths = ft_split(pth, ':');
 	free(pth);
 	s->nb = 0;
-	while (paths && paths[s->nb])
+	while (paths && paths[s->nb] && s->t[s->i].tok[0])
 	{
 		pth = ft_join(paths[s->nb], s->t[s->i].tok);
 		if (access(pth, F_OK) == 0)
@@ -82,7 +62,6 @@ int	ft_setcmd2(t_shell *s)
 	}
 	ft_free(paths);
 	printf("%s: command not found\n", s->t[s->i].tok);
-	ft_setempty(s);
 	s->exit = 127;
 	return (0);
 }
@@ -124,7 +103,6 @@ void	ft_setarg2(t_shell *s)
 			s->t[s->i].arg[k++] = ft_strcpy(s->t[i].tok);
 		i++;
 	}
-	s->t[s->i].arg[k] = 0;
 }
 
 void	ft_setarg(t_shell *s)

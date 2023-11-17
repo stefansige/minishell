@@ -29,6 +29,58 @@ int	ft_valid(char *line)
 	return (1);
 }
 
+int	ft_iss(char c)
+{
+	if (c == 32 || (c <= 13 && c >= 8))
+		return (1);
+	else
+		return (0);
+}
+
+int	ft_istok(t_shell *s, char c)
+{
+	int	i;
+
+	i = s->i + 1;
+	while (s->l[i] && s->l[i] != c)
+		i++;
+	if (s->i == 0 || ft_iss(s->l[s->i - 1]))
+	{
+		if (!s->l[i] || ft_iss(s->l[i + 1]) || !s->l[i + 1])
+			return (1);
+	}
+	return (0);
+}
+
+int	ft_qplus(t_shell *s, char c)
+{
+	int	r;
+
+	r = 0;
+	if (ft_istok(s, c))
+	{
+		s->nb++;
+		r = 1;
+	}
+	s->i++;
+	while (s->l[s->i] && s->l[s->i] != c)
+		s->i++;
+	s->i++;
+	return (r);
+}
+
+int	ft_isempty(t_shell *s)
+{
+	if ((s->l[s->i] == '\'' && s->l[s->i + 1] == '\'') || (s->l[s->i] == '\"' && s->l[s->i + 1] == '\"'))
+	{
+		if (s->i > 0 && ft_iss(s->l[s->i - 1]) && (ft_iss(s->l[s->i + 2]) || !s->l[s->i + 2]))
+			return (1);
+		else if (s->i == 0 && (ft_iss(s->l[s->i + 2]) || !s->l[s->i + 2]))
+			return (1);
+	}
+	return (0);
+}
+
 void	ft_iplus(t_shell *s, int ver)
 {
 	if (ver == 1)
@@ -38,33 +90,12 @@ void	ft_iplus(t_shell *s, int ver)
 	s->nb++;
 }
 
-int	ft_iss(char c)
-{
-	if (c == 32 || (c <= 13 && c >= 8))
-		return (1);
-	else
-		return (0);
-}
-
 int	ft_ism(char c)
 {
-	if (c == '<' || c == '>' || c == '|' || c == '\'' || c == '\"')
+	if (c == '<' || c == '>' || c == '|')
 		return (1);
 	else
 		return (0);
-}
-
-void	ft_qplus(t_shell *s, int ver, char *l)
-{
-	s->nb++;
-	s->i++;
-	if (ver == 1)
-		while (l[s->i] && l[s->i] != '\'')
-			s->i++;
-	else if (ver == 2)
-		while (l[s->i] && l[s->i] != '\"')
-			s->i++;
-	s->i++;
 }
 
 void	ft_tcount(t_shell *s, char *l)
@@ -83,17 +114,25 @@ void	ft_tcount(t_shell *s, char *l)
 			ft_iplus(s, 2);
 		else if (l[s->i] == '|' || l[s->i] == '>' || l[s->i] == '<')
 			ft_iplus(s, 1);
-		else if (l[s->i] == '\'')
-			ft_qplus(s, 1, l);
-		else if (l[s->i] == '\"')
-			ft_qplus(s, 2, l);
+		else if (l[s->i] == '\'' || l[s->i] == '\"')
+			ft_qplus(s, l[s->i]);
 		else
 			s->i++;
 	}
 	s->tnb = s->nb;
 }
 
-void	ft_lalloc(t_shell *s, int fun, int ver, char *l)
+void	ft_lnull(t_shell *s)
+{
+	s->t[s->nb - 1].cmd = NULL;
+	s->t[s->nb - 1].input = -1;
+	s->t[s->nb - 1].output = -1;
+	s->t[s->nb - 1].here = NULL;
+	s->t[s->nb - 1].arg = NULL;
+	s->ln = s->i;
+}
+
+void	ft_lalloc(t_shell *s, int fun, int ver)
 {
 	int	y;
 	int	k;
@@ -101,7 +140,10 @@ void	ft_lalloc(t_shell *s, int fun, int ver, char *l)
 	if (fun == 1)
 		ft_iplus(s, ver);
 	else if (fun == 2)
-		ft_qplus(s, ver, l);
+	{
+		if (ft_qplus(s, s->l[s->i]) == 0)
+			return ;
+	}
 	k = 0;
 	y = s->ln;
 	while (y < s->i)
@@ -109,13 +151,8 @@ void	ft_lalloc(t_shell *s, int fun, int ver, char *l)
 		k++;
 		y++;
 	}
-	s->t[s->nb - 1].tok = ft_calloc((sizeof(char)), k + 1);
-	s->t[s->nb - 1].cmd = NULL;
-	s->t[s->nb - 1].input = -1;
-	s->t[s->nb - 1].output = -1;
-	s->t[s->nb - 1].here = NULL;
-	s->t[s->nb - 1].arg = NULL;
-	s->ln = s->i;
+	s->t[s->nb - 1].tok = ft_calloc(sizeof(char), k + 1);
+	ft_lnull(s);
 }
 
 void	ft_tlen(t_shell *s, char *l)
@@ -133,15 +170,13 @@ void	ft_tlen(t_shell *s, char *l)
 		else if ((!ft_ism(l[s->i]) && ft_iss(l[s->i + 1])) ||
 			(!ft_ism(l[s->i]) && l[s->i + 1] == '\0') ||
 			(ft_ism(l[s->i + 1]) && !ft_ism(l[s->i])))
-				ft_lalloc(s, 1, 1, l);
+				ft_lalloc(s, 1, 1);
 		else if ((l[s->i] == '>' && l[s->i + 1] == '>') || (l[s->i] == '<' && l[s->i + 1] == '<'))
-			ft_lalloc(s, 1, 2, l);
+			ft_lalloc(s, 1, 2);
 		else if (l[s->i] == '|' || l[s->i] == '>' || l[s->i] == '<')
-			ft_lalloc(s, 1, 1, l);
-		else if (l[s->i] == '\'')
-			ft_lalloc(s, 2, 1, l);
-		else if (l[s->i] == '\"')
-			ft_lalloc(s, 2, 2, l);
+			ft_lalloc(s, 1, 1);
+		else if (l[s->i] == '\'' || l[s->i] == '\"')
+			ft_lalloc(s, 2, 0);
 		else
 			s->i++;
 	}
@@ -165,10 +200,6 @@ void	ft_lsettype(t_shell *s, int fun, int ver)
 		else
 			s->t[s->nb].type = 7;
 	}
-	else if (fun == 2 && ver == 1)
-		s->t[s->nb].type = 8;
-	else if (fun == 2 && ver == 2)
-		s->t[s->nb].type = 9;
 	else
 		s->t[s->nb].type = 0;
 }
@@ -179,25 +210,29 @@ void	ft_lset(t_shell *s, int fun, int ver, char *l)
 	int	k;
 
 	ft_lsettype(s, fun, ver);
-	if (fun <= 1)
+	if (fun == 1)
 		ft_iplus(s, ver);
-	else if (fun == 2)
-		ft_qplus(s, ver, l);
 	y = s->ln;
 	k = 0;
-	if (fun == 2)
-	{
-		y++;
-		s->i--;
-		while (y < s->i)
-			s->t[s->nb - 1].tok[k++] = l[y++];
-		s->i++;
- 		s->ln = s->i;
-		return ;
-	}
 	while (y < s->i)
 		s->t[s->nb - 1].tok[k++] = l[y++];
  	s->ln = s->i;
+}
+
+void	ft_qset(t_shell *s, char c)
+{
+	if (s->i == 0 || ft_iss(s->l[s->i - 1] || ft_ism(s->i - 1)))
+	{
+		s->nb++;
+		s->ln = 0;
+	}
+	s->i++;
+	while (s->l[s->i] && s->l[s->i] != c)
+	{
+		s->t[s->nb].tok[s->ln++] = s->l[s->i++];
+	}
+	if (s->l[s->i] == c)
+		s->i++;
 }
 
 void	ft_tset(t_shell *s, char *l)
@@ -207,24 +242,28 @@ void	ft_tset(t_shell *s, char *l)
 	s->ln = 0;
 	while (l[s->i])
 	{
-		if(ft_iss(l[s->i]))
-		{
-			s->ln++;
+		while (ft_iss(l[s->i]))
 			s->i++;
-		}
-		else if ((!ft_ism(l[s->i]) && ft_iss(l[s->i + 1])) ||
+		if ((!ft_ism(l[s->i]) && ft_iss(l[s->i + 1])) ||
 			(!ft_ism(l[s->i]) && l[s->i + 1] == '\0') ||
 			(ft_ism(l[s->i + 1]) && !ft_ism(l[s->i])))
-				ft_lset(s, 0, 1, l);
+			{
+				s->nb++;
+				s->ln = 0;
+			}
 		else if ((l[s->i] == '>' && l[s->i + 1] == '>') || (l[s->i] == '<' && l[s->i + 1] == '<'))
-			ft_lset(s, 1, 2, l);
+		{
+			s->nb++;
+			s->ln = 0;
+		}
 		else if (l[s->i] == '|' || l[s->i] == '>' || l[s->i] == '<')
-			ft_lset(s, 1, 1, l);
-		else if (l[s->i] == '\'')
-			ft_lset(s, 2, 1, l);
-		else if (l[s->i] == '\"')
-			ft_lset(s, 2, 2, l);
-		else
+		{
+			s->nb++;
+			s->ln = 0;
+		}
+		else if (l[s->i] == '\'' || l[s->i] == '\"')
+			ft_qset(s, l[s->i]);
+		s->t[s->nb].tok[s->ln++] = l[s->i];
 			s->i++;
 	}
 }

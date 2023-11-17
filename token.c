@@ -77,13 +77,13 @@ int	ft_checkred(t_shell *s)
 {
 	if (!s->t[s->i + 1].tok)
 	{
-		printf("bash: syntax error near unexpected token `newline'\n");
+		printf("syntax error near unexpected token `newline'\n");
 		s->exit = 2;
 		return (1);
 	}
 	if (ft_isact(s->t[s->i + 1].type))
 	{
-		printf("bash: syntax error near unexpected token `%s'\n", s->t[s->i + 1].tok);
+		printf("syntax error near unexpected token `%s'\n", s->t[s->i + 1].tok);
 		s->exit = 2;
 		return (1);
 	}
@@ -96,7 +96,7 @@ int	ft_checkred(t_shell *s)
 				return (ft_setoutput(s, 0));
 			else if (access(s->t[s->i + 1].tok, W_OK) != 0)
 			{
-				printf("bash: %s: Permission denied\n", s->t[s->i + 1].tok);
+				printf("%s: Permission denied\n", s->t[s->i + 1].tok);
 				s->exit = 1;
 				ft_disable(s);
 				return (0);
@@ -115,14 +115,14 @@ int	ft_checkred(t_shell *s)
 			}
 			if (access(s->t[s->i + 1].tok, R_OK) != 0)
 			{
-				printf("bash: %s: No such file or directory\n", s->t[s->i + 1].tok);
+				printf("%s: No such file or directory\n", s->t[s->i + 1].tok);
 				s->exit = 1;
 				ft_disable(s);
 				return (0);
 			}
 			else if (access(s->t[s->i + 1].tok, R_OK) != 0)
 			{
-				printf("bash: %s: Permission denied\n", s->t[s->i + 1].tok);
+				printf("%s: Permission denied\n", s->t[s->i + 1].tok);
 				s->exit = 1;
 				ft_disable(s);
 				return (0);
@@ -137,13 +137,13 @@ int	ft_checkpipe(t_shell *s)
 {
 	if (s->i == 0 || s->t[s->i + 1].type == 3)
 	{
-		printf("bash: syntax error near unexpected token `|'\n");
+		printf("syntax error near unexpected token `|'\n");
 		s->exit = 2;
 		return (1);
 	}
 	else if (!s->t[s->i + 1].tok)
 	{
-		printf("bash: syntax error near unexpected token `newline'\n");
+		printf("syntax error near unexpected token `newline'\n");
 		s->exit = 2;
 		return (1);
 	}

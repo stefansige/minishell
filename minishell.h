@@ -47,6 +47,9 @@ typedef struct s_shell
 	unsigned int	exit;
 	int				nb;
 	int				ln;
+	int				k;
+	int				y;
+	int				flag;
 	int				import;
 	char			*l;
 	char			*prompt;

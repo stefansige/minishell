@@ -70,12 +70,12 @@ int	ft_setcmd(t_shell *s)
 {
 	if (ft_isdir(s->t[s->i].tok))
 	{
-		printf ("bash: %s: Is a directory\n", s->t[s->i].tok);
+		printf ("%s: Is a directory\n", s->t[s->i].tok);
 		s->exit = 126;
 	}
 	else if (ft_islash(s->t[s->i].tok) && access(s->t[s->i].tok, F_OK) != 0)
 	{
-		printf ("bash: %s: No such file or directory\n", s->t[s->i].tok);
+		printf ("%s: No such file or directory\n", s->t[s->i].tok);
 		s->exit = 127;
 	}
 	else if (ft_isbuiltin(s, 0) == 1)
@@ -236,7 +236,7 @@ void	ft_exec(t_shell *s)
 			{
 				if (access(s->t[s->i].cmd, X_OK) != 0)
 				{
-					printf("bash: %s: Permission denied\n", s->t[s->i].tok);
+					printf("%s: Permission denied\n", s->t[s->i].tok);
 					s->exit = 126;
 				}
 				else

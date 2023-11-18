@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int g_exit = 0;
+int	g_exit = 0;
 
 int	ft_valid(char *line)
 {
@@ -55,7 +55,8 @@ int	ft_qplus(t_shell *s, char c)
 		s->i++;
 		s->k++;
 	}
-	if (!s->l[s->i] || !s->l[s->i + 1] || ft_ism(s->l[s->i + 1]) || ft_iss(s->l[s->i + 1]))
+	if (!s->l[s->i] || !s->l[s->i + 1]
+		|| ft_ism(s->l[s->i + 1]) || ft_iss(s->l[s->i + 1]))
 	{
 		s->nb++;
 		s->i++;
@@ -87,15 +88,16 @@ void	ft_tcount(t_shell *s, char *l)
 	s->k = 0;
 	while (l[s->i])
 	{
-		if(ft_iss(l[s->i]))
+		if (ft_iss(l[s->i]))
 			s->i++;
 		else if (l[s->i] == '\'' || l[s->i] == '\"')
 			ft_qplus(s, l[s->i]);
-		else if ((!ft_ism(l[s->i]) && ft_iss(l[s->i + 1])) ||
-			(!ft_ism(l[s->i]) && l[s->i + 1] == '\0') ||
-			(ft_ism(l[s->i + 1]) && !ft_ism(l[s->i])))
-				ft_iplus(s, 1);
-		else if ((l[s->i] == '>' && l[s->i + 1] == '>') || (l[s->i] == '<' && l[s->i + 1] == '<'))
+		else if ((!ft_ism(l[s->i]) && ft_iss(l[s->i + 1]))
+			|| (!ft_ism(l[s->i]) && l[s->i + 1] == '\0')
+			|| (ft_ism(l[s->i + 1]) && !ft_ism(l[s->i])))
+			ft_iplus(s, 1);
+		else if ((l[s->i] == '>' && l[s->i + 1] == '>')
+			|| (l[s->i] == '<' && l[s->i + 1] == '<'))
 			ft_iplus(s, 2);
 		else if (l[s->i] == '|' || l[s->i] == '>' || l[s->i] == '<')
 			ft_iplus(s, 1);
@@ -136,15 +138,16 @@ void	ft_tlen(t_shell *s, char *l)
 	s->k = 0;
 	while (l[s->i])
 	{
-		if(ft_iss(l[s->i]))
+		if (ft_iss(l[s->i]))
 			s->i++;
 		else if (l[s->i] == '\'' || l[s->i] == '\"')
 			ft_lalloc(s, 2, 0);
-		else if ((!ft_ism(l[s->i]) && ft_iss(l[s->i + 1])) ||
-			(!ft_ism(l[s->i]) && l[s->i + 1] == '\0') ||
-			(ft_ism(l[s->i + 1]) && !ft_ism(l[s->i])))
-				ft_lalloc(s, 1, 1);
-		else if ((l[s->i] == '>' && l[s->i + 1] == '>') || (l[s->i] == '<' && l[s->i + 1] == '<'))
+		else if ((!ft_ism(l[s->i]) && ft_iss(l[s->i + 1]))
+			|| (!ft_ism(l[s->i]) && l[s->i + 1] == '\0')
+			|| (ft_ism(l[s->i + 1]) && !ft_ism(l[s->i])))
+			ft_lalloc(s, 1, 1);
+		else if ((l[s->i] == '>' && l[s->i + 1] == '>')
+			|| (l[s->i] == '<' && l[s->i + 1] == '<'))
 			ft_lalloc(s, 1, 2);
 		else if (l[s->i] == '|' || l[s->i] == '>' || l[s->i] == '<')
 			ft_lalloc(s, 1, 1);
@@ -186,7 +189,8 @@ int	ft_qset(t_shell *s, char c)
 	s->i++;
 	while (s->l[s->i] && s->l[s->i] != c)
 		s->t[s->nb].tok[s->y++] = s->l[s->i++];
-	if (!s->l[s->i] || !s->l[s->i + 1] || ft_ism(s->l[s->i + 1]) || ft_iss(s->l[s->i + 1]))
+	if (!s->l[s->i] || !s->l[s->i + 1] || ft_ism(s->l[s->i + 1])
+		|| ft_iss(s->l[s->i + 1]))
 	{
 		s->nb++;
 		s->i++;
@@ -218,18 +222,19 @@ void	ft_tset(t_shell *s, char *l)
 	s->ln = 0;
 	while (l[s->i])
 	{
-		if(ft_iss(l[s->i]))
+		if (ft_iss(l[s->i]))
 		{
 			s->ln++;
 			s->i++;
 		}
 		else if (l[s->i] == '\'' || l[s->i] == '\"')
 			ft_qset(s, l[s->i]);
-		else if ((!ft_ism(l[s->i]) && ft_iss(l[s->i + 1])) ||
-			(!ft_ism(l[s->i]) && l[s->i + 1] == '\0') ||
-			(ft_ism(l[s->i + 1]) && !ft_ism(l[s->i])))
-				ft_lset(s, 1, 1);
-		else if ((l[s->i] == '>' && l[s->i + 1] == '>') || (l[s->i] == '<' && l[s->i + 1] == '<'))
+		else if ((!ft_ism(l[s->i]) && ft_iss(l[s->i + 1]))
+			|| (!ft_ism(l[s->i]) && l[s->i + 1] == '\0')
+			|| (ft_ism(l[s->i + 1]) && !ft_ism(l[s->i])))
+			ft_lset(s, 1, 1);
+		else if ((l[s->i] == '>' && l[s->i + 1] == '>')
+			|| (l[s->i] == '<' && l[s->i + 1] == '<'))
 			ft_lset(s, 1, 2);
 		else if (l[s->i] == '|' || l[s->i] == '>' || l[s->i] == '<')
 			ft_lset(s, 1, 1);
@@ -243,7 +248,7 @@ int	ft_lexor(t_shell *s)
 	add_history(s->l);
 	ft_dollar(s);
 	ft_tcount(s, s->l);
-	s->t = (t_token*)malloc(sizeof(t_token) * (s->tnb + 1));
+	s->t = (t_token *)malloc(sizeof(t_token) * (s->tnb + 1));
 	s->t[s->tnb].tok = NULL;
 	ft_tlen(s, s->l);
 	ft_tset(s, s->l);
@@ -254,14 +259,24 @@ int	ft_lexor(t_shell *s)
 	}
 	return (1);
 }
-
+void	ft_restart2(t_shell *s)
+{
+	if (s->t)
+	{
+		free(s->t);
+		s->t = NULL;
+	}
+	if (s->l)
+	{
+		free(s->l);
+		s->l = NULL;
+	}
+}
 void	ft_restart(t_shell *s)
 {
 	int	i;
 
 	i = 0;
-	if (s->l)
-		free(s->l);
 	if (g_exit != 0)
 	{
 		s->exit = g_exit;
@@ -279,11 +294,10 @@ void	ft_restart(t_shell *s)
 			free(s->t[i].here);
 		i++;
 	}
-	if (s->t)
-		free(s->t);
+	ft_restart2(s);
 }
 
-void ft_exit(t_shell *s, int ver)
+void	ft_exit(t_shell *s, int ver)
 {
 	ft_restart(s);
 	ft_free(s->env);
@@ -298,46 +312,67 @@ void ft_exit(t_shell *s, int ver)
 	}
 }
 
+void	ft_checkexit2(t_shell *s)
+{
+	if (s->t[1].tok && s->t[1].type == 2)
+		s->i = ft_atoi(s->t[1].tok);
+	if (s->i == -1010101)
+	{
+		if (s->nb != -1)
+			printf("exit\n");
+		printf ("exit: %s: numeric argument required\n", s->t[1].tok);
+		s->i = 2;
+	}
+	else if (s->t[1].tok && s->t[1].type == 2
+		&& s->t[2].tok && s->t[2].type == 2)
+	{
+		if (s->nb != -1)
+			printf("exit\n");
+		printf ("exit: too many arguments\n");
+		s->i = 1;
+	}
+	else if (s->nb != -1)
+		printf("exit\n");
+}
+
 void	ft_checkexit(t_shell *s)
 {
-	int	i;
-
-	if (ft_compare(s->t[0].tok, "exit"))
+	if (ft_compare(s->t[0].tok, "exit") && s->t[0].type == 1)
 	{
-		i = 0;
-		while (s->t[i].tok)
+		s->t[0].type = -1;
+		s->i = s->exit;
+		s->nb = 0;
+		while (s->t[s->nb].tok)
 		{
-			if (s->t[i].type == 3)
-				return;
-			i++;
+			if (s->t[s->nb].type == 3)
+			{
+				s->nb = -1;
+				break ;
+			}
+			s->nb++;
 		}
-		i = s->exit;
-		printf("exit\n");
-		if (s->t[1].tok && s->t[1].type == 2)
-			i = ft_atoi(s->t[1].tok);
-		if (i == -1010101)
+		ft_checkexit2(s);
+		if (s->nb != -1)
 		{
-			printf ("exit: %s: numeric argument required\n", s->t[1].tok);
-			i = 2;
+			ft_exit(s, 0);
+			exit (s->i);
 		}
-		else if (s->t[1].tok && s->t[1].type == 2 &&
-		s->t[2].tok && s->t[2].type == 2)
-		{
-			printf ("exit: too many arguments\n");
-			i = 1;
-		}
-		ft_exit(s, 0);
-		exit (i);
 	}
 }
 
-void	signal_ctrlc()
+void	signal_ctrlc(int signum)
 {
+	(void)signum;
 	printf("\n");
 	g_exit = 130;
-    rl_on_new_line();
+	rl_on_new_line();
 	rl_replace_line("", 0);
-    rl_redisplay();
+	rl_redisplay();
+}
+
+void	ft_builtin(t_shell *s)
+{
+	
 }
 
 void	ft_minishell(t_shell *s)
@@ -346,17 +381,20 @@ void	ft_minishell(t_shell *s)
 	{
 		signal(SIGINT, signal_ctrlc);
 		signal(SIGQUIT, SIG_IGN);
-		s->l = NULL;
 		s->l = readline(s->prompt);
 		if (s->l)
 		{
 			if (ft_valid(s->l))
+			{
 				if (ft_lexor(s))
+				{
 					if (ft_token(s))
 					{
-						ft_checkexit(s);
+						ft_builtin(s);
 						ft_exec(s);
 					}
+				}
+			}
 		}
 		else
 			ft_exit(s, 1);
@@ -364,16 +402,23 @@ void	ft_minishell(t_shell *s)
 	}
 }
 
-char	**ft_dpcpy(char **s)
+int	ft_dpstrlen(char **s)
 {
 	int	i;
-	int	y;
-	char	**ret;
 
 	i = 0;
 	while (s && s[i])
 		i++;
-	ret = ft_calloc(sizeof(char *), i + 1);
+	return (i);
+}
+
+char	**ft_dpcpy(char **s)
+{
+	int		i;
+	int		y;
+	char	**ret;
+
+	ret = ft_calloc(sizeof(char *), ft_dpstrlen(s) + 1);
 	i = 0;
 	while (s && s[i])
 	{
@@ -412,7 +457,7 @@ void	ft_init(t_shell *s, char **env)
 
 int	main(int argc, char **argv, char **env)
 {
-	t_shell s;
+	t_shell	s;
 
 	(void)argc;
 	(void)argv;

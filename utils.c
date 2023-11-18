@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: snovakov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/18 16:10:43 by snovakov          #+#    #+#             */
+/*   Updated: 2023/11/18 16:10:45 by snovakov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static void	ft_bzero(void *s, size_t n)
@@ -6,7 +18,7 @@ static void	ft_bzero(void *s, size_t n)
 	char	*str;
 
 	i = 0;
-	str = (char*)s;
+	str = (char *)s;
 	if (n == 0)
 		return ;
 	while (i < n)
@@ -16,10 +28,9 @@ static void	ft_bzero(void *s, size_t n)
 	}
 }
 
-
 void	*ft_calloc(size_t size, size_t count)
 {
-	void *ptr;
+	void	*ptr;
 
 	ptr = malloc(count * size);
 	if (ptr == NULL)
@@ -133,7 +144,7 @@ char	*ft_strjoin(char *str1, char *str2)
 char	*ft_strcpy(char *s)
 {
 	char	*cpy;
-	int	i;
+	int		i;
 
 	if (!s)
 		return (NULL);
@@ -152,7 +163,7 @@ void	ft_free(char **s)
 	int	i;
 
 	if (s == NULL)
-		return;
+		return ;
 	i = 0;
 	while (s && s[i])
 	{

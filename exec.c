@@ -160,14 +160,15 @@ void	ft_child(t_shell *s, int pip[], int hdpip[])
 		dup2(pip[1], STDOUT_FILENO);
 	close(pip[0]);
 	//if (ft_isbuiltin(s, 1))
-	//	exit(1);
+	//	exit(errno);
 	if (execve(s->t[s->i].cmd, s->t[s->i].arg, s->env) == -1)
 		exit(errno);
 	exit(0);
 }
 
-void	signal_fork()
+void	signal_fork(int signum)
 {
+	(void)signum;
 	g_exit = 130;
 	printf("\n");
 }
@@ -198,9 +199,9 @@ int	ft_parent(t_shell *s, int pip[], int hdpip[])
 
 int	ft_fork(t_shell *s)
 {
-	pid_t pid;
-	int	pip[2];
-	int	hdpip[2];
+	pid_t	pid;
+	int		pip[2];
+	int		hdpip[2];
 
 	if (pipe(pip) == -1 || pipe(hdpip) == -1)
 	{

@@ -27,9 +27,11 @@ int	ft_setoutput(t_shell *s, int ver)
 		if (s->t[s->nb].type == 1)
 		{
 			if (ver == 1)
-				s->t[s->nb].output = open(s->t[s->i + 1].tok, O_CREAT | O_WRONLY | O_APPEND, 0644);
+				s->t[s->nb].output = open(s->t[s->i + 1].tok,
+						O_CREAT | O_WRONLY | O_APPEND, 0644);
 			else
-				s->t[s->nb].output = open(s->t[s->i + 1].tok, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+				s->t[s->nb].output = open(s->t[s->i + 1].tok,
+						O_CREAT | O_WRONLY | O_TRUNC, 0644);
 			return (0);
 		}
 		s->nb--;
@@ -73,6 +75,48 @@ void	ft_disable(t_shell *s)
 	}
 }
 
+int	ft_checkoutput(t_shell *s)
+{
+	if (access(s->t[s->i + 1].tok, F_OK) != 0)
+		return (ft_setoutput(s, 0));
+	else if (access(s->t[s->i + 1].tok, W_OK) != 0)
+	{
+		printf("%s: Permission denied\n", s->t[s->i + 1].tok);
+		s->exit = 1;
+		ft_disable(s);
+		return (0);
+	}
+	else if (s->t[s->i].type == 4)
+		return (ft_setoutput(s, 0));
+	else if (s->t[s->i].type == 6)
+		return (ft_setoutput(s, 1));
+	return (0);
+}
+
+int	ft_checkinput(t_shell *s)
+{
+	if (s->t[s->i].type == 7)
+	{
+		ft_heredoc(s);
+		return (0);
+	}
+	if (access(s->t[s->i + 1].tok, R_OK) != 0)
+	{
+		printf("%s: No such file or directory\n", s->t[s->i + 1].tok);
+		s->exit = 1;
+		ft_disable(s);
+		return (0);
+	}
+	else if (access(s->t[s->i + 1].tok, R_OK) != 0)
+	{
+		printf("%s: Permission denied\n", s->t[s->i + 1].tok);
+		s->exit = 1;
+		ft_disable(s);
+		return (0);
+	}
+	return (ft_setinput(s));
+}
+
 int	ft_checkred(t_shell *s)
 {
 	if (!s->t[s->i + 1].tok)
@@ -91,44 +135,9 @@ int	ft_checkred(t_shell *s)
 	{
 		s->t[s->i + 1].type = 10;
 		if (s->t[s->i].type == 4 || s->t[s->i].type == 6)
-		{
-			if (access(s->t[s->i + 1].tok, F_OK) != 0)
-				return (ft_setoutput(s, 0));
-			else if (access(s->t[s->i + 1].tok, W_OK) != 0)
-			{
-				printf("%s: Permission denied\n", s->t[s->i + 1].tok);
-				s->exit = 1;
-				ft_disable(s);
-				return (0);
-			}
-			else if (s->t[s->i].type == 4)
-				return (ft_setoutput(s, 0));
-			else if (s->t[s->i].type == 6)
-				return (ft_setoutput(s, 1));
-		}
+			return (ft_checkoutput(s));
 		else if (s->t[s->i].type == 5 || s->t[s->i].type == 7)
-		{
-			if (s->t[s->i].type == 7)
-			{
-				ft_heredoc(s);
-				return (0);
-			}
-			if (access(s->t[s->i + 1].tok, R_OK) != 0)
-			{
-				printf("%s: No such file or directory\n", s->t[s->i + 1].tok);
-				s->exit = 1;
-				ft_disable(s);
-				return (0);
-			}
-			else if (access(s->t[s->i + 1].tok, R_OK) != 0)
-			{
-				printf("%s: Permission denied\n", s->t[s->i + 1].tok);
-				s->exit = 1;
-				ft_disable(s);
-				return (0);
-			}
-			return (ft_setinput(s));
-		}
+			return (ft_checkinput(s));
 	}
 	return (0);
 }
@@ -151,6 +160,24 @@ int	ft_checkpipe(t_shell *s)
 	return (0);
 }
 
+int	ft_token2(t_shell *s)
+{
+	s->t[s->i].type = 1;
+	s->i++;
+	while (s->t[s->i].tok && s->t[s->i].type != 3)
+	{
+		if (s->t[s->i].type >= 4 && s->t[s->i].type <= 7)
+		{
+			if (ft_checkred(s))
+				return (0);
+			s->i += 2;
+		}
+		else
+			s->t[s->i++].type = 2;
+	}
+	return (1);
+}
+
 int	ft_token(t_shell *s)
 {
 	s->i = 0;
@@ -158,19 +185,8 @@ int	ft_token(t_shell *s)
 	{
 		if (s->t[s->i].type == 0 && (s->i == 0 || s->t[s->i - 1].type == 3))
 		{
-			s->t[s->i].type = 1;
-			s->i++;
-			while (s->t[s->i].tok && s->t[s->i].type != 3)
-			{
-				if (s->t[s->i].type >= 4 && s->t[s->i].type <= 7)
-				{
-					if (ft_checkred(s))
-						return (0);
-					s->i += 2;
-				}
-				else
-					s->t[s->i++].type = 2;
-			}
+			if (ft_token2(s) == 0)
+				return (0);
 		}
 		else if (s->t[s->i].type >= 4 && s->t[s->i].type <= 7)
 		{

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_isbuiltin.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: snovakov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/18 15:18:58 by snovakov          #+#    #+#             */
+/*   Updated: 2023/11/18 15:19:00 by snovakov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	ft_compare(char *s1, char *s2)
@@ -16,12 +28,7 @@ int	ft_compare(char *s1, char *s2)
 
 int	ft_isbuiltin3(t_shell *s, int ver)
 {
-	if (ft_compare(s->t[s->i].tok, "exit"))
-	{
-		if (ver == 1)
-			//ft_exit(s->arg, s->env);
-		return (1);
-	}
+	
 	return (0);
 }
 
@@ -39,14 +46,18 @@ int	ft_isbuiltin2(t_shell *s, int ver)
 			//ft_unset(s->arg, s->env)
 		return (1);
 	}
-	else if (ft_compare(s->t[s->i].tok, "env"))
+	else if (ft_compare(s->t[s->i].tok, "cd"))
 	{
 		if (ver == 1)
-			//ft_env(s->t[s->i].arg, s->env);
+			//ft_cd(s->arg, s->env);
 		return (1);
 	}
-	else
-		return (ft_isbuiltin3(s, ver));
+	if (ft_compare(s->t[s->i].tok, "exit"))
+	{
+		if (ver == 1)
+			//ft_exit(s->arg, s->env);
+		return (1);
+	}
 	return (0);
 }
 
@@ -58,16 +69,16 @@ int	ft_isbuiltin(t_shell *s, int ver)
 			//ft_echo(s->t[s->i].arg, s->env);
 		return (1);
 	}
-	else if (ft_compare(s->t[s->i].tok, "cd"))
-	{
-		if (ver == 1)
-			//ft_cd(s->arg, s->env);
-		return (1);
-	}
 	else if (ft_compare(s->t[s->i].tok, "pwd"))
 	{
 		if (ver == 1)
 			//ft_pwd(s->t[s->i].arg, s->env);
+		return (1);
+	}
+	else if (ft_compare(s->t[s->i].tok, "env"))
+	{
+		if (ver == 1)
+			//ft_env(s->t[s->i].arg, s->env);
 		return (1);
 	}
 	else

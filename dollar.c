@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   dollar.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: snovakov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/18 15:05:48 by snovakov          #+#    #+#             */
+/*   Updated: 2023/11/18 15:05:50 by snovakov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	ft_isvname(char c)
 {
-	if (c && ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') ||
-			(c >= 'A' && c <= 'Z') || (c == '_')))
+	if (c && ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z')
+			|| (c >= 'A' && c <= 'Z') || (c == '_')))
 		return (1);
 	else
 		return (0);
@@ -11,14 +23,15 @@ int	ft_isvname(char c)
 
 char	*ft_adddol(char *l, int i, char *env)
 {
-	int	y;
-	int	k;
-	char *ret;
+	int		y;
+	int		k;
+	char	*ret;
 
 	y = 0;
 	while (env[y] != '=')
 		y++;
-	ret = ft_calloc((ft_strlen(env) - y) + (ft_strlen(l) - ft_dolen(l, i) - 1), sizeof(char));
+	ret = ft_calloc(sizeof(char),
+			(ft_strlen(env) - y) + (ft_strlen(l) - ft_dolen(l, i) - 1));
 	y++;
 	k = 0;
 	while (k < (i - 1))
@@ -36,13 +49,14 @@ char	*ft_adddol(char *l, int i, char *env)
 
 char	*ft_rmdol(char *l, int i)
 {
-	char *new;
-	int	y;
-	int	z;
+	char	*new;
+	int		y;
+	int		z;
 
 	y = 0;
 	z = 0;
-	new = ft_calloc(((ft_strlen(l) - (ft_dolen(l, i + 1) + 1)) + 1), sizeof(char));
+	new = ft_calloc(sizeof(char),
+			((ft_strlen(l) - (ft_dolen(l, i + 1) + 1)) + 1));
 	while (l[y] && new)
 	{
 		if (y == i)
@@ -59,7 +73,6 @@ char	*ft_rmdol(char *l, int i)
 		}
 	}
 	free(l);
-	l = NULL;
 	return (new);
 }
 
@@ -67,7 +80,7 @@ char	*ft_find(char *l, int i, char **env)
 {
 	int	y;
 	int	z;
-	int j;
+	int	j;
 
 	i++;
 	y = i;
@@ -92,48 +105,57 @@ char	*ft_find(char *l, int i, char **env)
 		return (l = ft_rmdol(l, i - 1));
 }
 
-static size_t	get_digits(int n)
+static int	nbr_len(long n)
 {
-	size_t	i;
+	int	i;
 
-	i = 1;
-	while (n /= 10)
+	i = 0;
+	if (n <= 0)
+	{
+		n *= -1;
 		i++;
+	}
+	while (n > 0)
+	{
+		n /= 10;
+		i++;
+	}
 	return (i);
 }
 
 char	*ft_itoa(int n)
 {
-	char		*str_num;
-	size_t		digits;
-	long int	num;
+	char	*str;
+	int		n_len;
+	long	n_long;
 
-	num = n;
-	digits = get_digits(n);
-	if (n < 0)
-	{
-		num *= -1;
-		digits++;
-	}
-	if (!(str_num = (char *)malloc(sizeof(char) * (digits + 1))))
+	n_long = n;
+	n_len = nbr_len(n_long);
+	str = malloc((n_len + 1) * sizeof(char));
+	if (str == NULL)
 		return (NULL);
-	*(str_num + digits) = 0;
-	while (digits--)
+	if (n_long == 0)
+		str[0] = '0';
+	if (n_long < 0)
 	{
-		*(str_num + digits) = num % 10 + '0';
-		num = num / 10;
+		n_long *= -1;
+		str[0] = '-';
 	}
-	if (n < 0)
-		*(str_num + 0) = '-';
-	return (str_num);
+	str[n_len] = '\0';
+	while (n_long > 0)
+	{
+		str[n_len-- - 1] = (n_long % 10) + 48;
+		n_long /= 10;
+	}
+	return (str);
 }
 
 void	ft_exitdol(t_shell *s, int i)
 {
 	char	*exit;
 	char	*ret;
-	int	y;
-	int	k;
+	int		y;
+	int		k;
 
 	exit = ft_itoa(s->exit);
 	ret = ft_calloc(sizeof(char), (ft_strlen(s->l) + ft_strlen(exit) - 1));
@@ -146,6 +168,7 @@ void	ft_exitdol(t_shell *s, int i)
 	k = 0;
 	while (exit[k])
 		ret[y++] = exit[k++];
+	free(exit);
 	k = i + 2;
 	while (s->l[k])
 		ret[y++] = s->l[k++];

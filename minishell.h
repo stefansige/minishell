@@ -11,22 +11,22 @@
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
- #define MINISHELL_H
+# define MINISHELL_H
 
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/wait.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <dirent.h>
-#include <stddef.h>
-#include <stdbool.h>
-#include <signal.h>
+# include <unistd.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <sys/wait.h>
+# include <fcntl.h>
+# include <errno.h>
+# include <dirent.h>
+# include <stddef.h>
+# include <stdbool.h>
+# include <signal.h>
 
 extern int	g_exit;
 
@@ -38,9 +38,9 @@ typedef struct s_token
 	char	*here;
 	int		input;
 	int		output;
-	int		type;		// 1-cmd, 2-arg, 3-pipe, 4-rred, 5-lred, 6-rapp, 7-lapp, 10-file
+	int		type;
 }	t_token;
-
+// 1-cmd, 2-arg, 3-pipe, 4-rred, 5-lred, 6-rapp, 7-lapp, 10-file
 typedef struct s_shell
 {
 	char			**env;

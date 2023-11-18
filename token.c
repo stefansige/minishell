@@ -154,7 +154,7 @@ int	ft_checkpipe(t_shell *s)
 int	ft_token(t_shell *s)
 {
 	s->i = 0;
-	while (s->t[s->i].tok)
+	while (s->t[s->i].tok && g_exit == 0)
 	{
 		if (s->t[s->i].type == 0 && (s->i == 0 || s->t[s->i - 1].type == 3))
 		{

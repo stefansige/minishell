@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+int g_exit = 0;
+
 int	ft_valid(char *line)
 {
 	int	i;
@@ -271,6 +273,21 @@ void	ft_restart(t_shell *s)
 		free(s->t);
 }
 
+void ft_exit(t_shell *s, int ver)
+{
+	ft_restart(s);
+	ft_free(s->env);
+	rl_clear_history();
+	free (s->prompt);
+	if (ver == 1)
+	{
+		if (g_exit != 0)
+			exit (g_exit);
+		else
+			exit (s->exit);
+	}
+}
+
 void	ft_checkexit(t_shell *s)
 {
 	int	i;
@@ -293,19 +310,36 @@ void	ft_checkexit(t_shell *s)
 			printf ("exit: %s: numeric argument required\n", s->t[1].tok);
 			i = 2;
 		}
-		ft_restart(s);
-		rl_clear_history();
+		else if (s->t[1].tok && s->t[1].type == 2 &&
+		s->t[2].tok && s->t[2].type == 2)
+		{
+			printf ("exit: too many arguments\n");
+			i = 1;
+		}
+		ft_exit(s, 0);
 		exit (i);
 	}
 }
 
+void	ft_ctrlc()
+{
+	printf("\n");
+    rl_on_new_line();
+	rl_replace_line("", 0);
+    rl_redisplay();
+	g_exit = 130;
+}
+
 void	ft_minishell(t_shell *s)
 {
+	signal(SIGINT, ft_ctrlc);
+	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
 		s->l = NULL;
 		s->l = readline(s->prompt);
 		if (s->l)
+		{
 			if (ft_valid(s->l))
 				if (ft_lexor(s))
 					if (ft_token(s))
@@ -313,9 +347,12 @@ void	ft_minishell(t_shell *s)
 						ft_checkexit(s);
 						ft_exec(s);
 					}
-
+		}
+		else
+			ft_exit(s, 1);
 		ft_restart(s);
 	}
+	ft_exit(s, 1);
 }
 
 char	**ft_dpcpy(char **s)
@@ -349,17 +386,9 @@ char	**ft_dpcpy(char **s)
 	return (ret);
 }
 
-void	ft_ctrlc()
-{
-	printf("\n");
-    rl_on_new_line();
-	rl_replace_line("", 0);
-    rl_redisplay();
-}
-
 void	ft_init(t_shell *s, char **env)
 {
-	s->prompt = "\033[1;31mminishell>\033[0m";
+	s->prompt = ft_strcpy("\033[1;31mminishell>\033[0m");
 	s->exit = 0;
 	s->env = ft_dpcpy(env);
 	s->ln = 0;
@@ -367,6 +396,7 @@ void	ft_init(t_shell *s, char **env)
 	s->t = NULL;
 	s->i = 0;
 	s->nb = 0;
+	g_exit = 0;
 	s->import = dup(STDIN_FILENO);
 }
 

@@ -26,6 +26,9 @@
 #include <dirent.h>
 #include <stddef.h>
 #include <stdbool.h>
+#include <signal.h>
+
+extern int	g_exit;
 
 typedef struct s_token
 {

@@ -178,7 +178,10 @@ int	ft_parent(t_shell *s, int pip[], int hdpip[])
 	}
 	close(pip[1]);
 	wait(&status);
-	s->exit = WEXITSTATUS(status);
+	if (WIFEXITED(status))
+		s->exit = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+		g_exit = 128 + (WTERMSIG(status));
 	if (s->i != s->ln)
 		dup2(pip[0], s->import);
 	close(pip[0]);
@@ -228,7 +231,7 @@ void	ft_exec(t_shell *s)
 	s->i = 0;
 	s->nb = 0;
 	ft_lastcmd(s);
-	while (s->t[s->i].tok)
+	while (s->t[s->i].tok && g_exit == 0)
 	{
 		if (s->t[s->i].type == 1)
 		{

@@ -6,7 +6,7 @@
 /*   By: azennari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 17:53:27 by azennari          #+#    #+#             */
-/*   Updated: 2023/11/18 20:03:28 by azennari         ###   ########.fr       */
+/*   Updated: 2023/11/18 20:08:45 by azennari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void	ft_set_cd(char **env)
 		if (oldpwd)
 			ft_reset(env, "OLDPWD", oldpwd);
 		else
-			//unset oldpwd
+			ft_unset_real(oldpwd, env);
 	}
 	if (oldpwd)
 		ft_reset(env, "PWD", getcwd(NULL, 0));
@@ -288,9 +288,6 @@ void	ft_unset(char **arg, char **env)
 		else
 			printf("unset: `%s': not a valid identifier", arg[i]);
 	}
-	//Find the varn (variable name), then use ft_getenv_n to locate it
-	//Allocate memory for a new_env, then copy everything in two steps, one before and one after the var to unset
-	//Free the old one and replace it with the new one
 }
 
 bool	ft_env_check(char *var)

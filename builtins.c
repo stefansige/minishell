@@ -6,35 +6,11 @@
 /*   By: azennari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 17:53:27 by azennari          #+#    #+#             */
-/*   Updated: 2023/11/17 19:23:15 by azennari         ###   ########.fr       */
+/*   Updated: 2023/11/18 19:48:29 by azennari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	ft_echo(char **arg, char **env)
-{
-	bool	flag;
-	int		i;
-
-	(void)env;
-	flag = false;
-	i = 0;
-	if (!(strcmp(*arg[i], "-n")))
-	{
-		flag = true;
-		i++;
-	}
-	while (*arg[i])
-	{
-		if (*arg[i + 1])
-			printf("%s ", *arg[i]);
-		else
-			printf("%s", *arg[i]);
-	}
-	if (flag)
-		printf("\n");
-}
 
 void	ft_pwd(char **arg, char **env)
 {
@@ -120,7 +96,7 @@ void	ft_set_cd(char **env)
 
 void	ft_cd(char **arg, char **env)
 {
-	if (arg[1])
+	if (arg[2])
 		printf("cd: too many arguments");
 	else
 	{
@@ -132,6 +108,24 @@ void	ft_cd(char **arg, char **env)
 		else
 			printf("cd: %s: No such file or directory", *arg[0]);
 	}
+}
+
+bool	ft_isvarn(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (!((str[i] >= '0' && str[i] <= '9')
+			|| (str[i] >= 'a' && str[i] <= 'z')
+			|| (str[i] >= 'A' && str[i] <= 'Z')
+			|| (str[i] == '_') || (str[i] == '=')))
+			return (false);
+		else
+			i++;
+	}
+	return (true);
 }
 
 void	ft_export_arg_len(char *arg, int *nlen, int *clen)
@@ -195,15 +189,21 @@ void	ft_set(char **env, char *varn, char *varc)
 {
 	char	**new_env;
 	int		i;
+	int		len;
 
 	i = 0;
-	while (env[i])
-		i++;
-	new_env = ft_calloc(sizeof(char *), i + 2);
-	while (env[--i])
+	len = 0;
+	while (env[len])
+		len++;
+	new_env = ft_calloc(sizeof(char *), len + 1);
+	while (env[++i])
 		new_env[i] = env[i];
-	//Allocate a new env, copy everthing inside it and add the new var
-	//Free the old env, then replace it with the already allocated and fresh new env
+	if (varc)
+		new_env[i] = ft_rereset(varn, varc);
+	else
+		new_env[i] = ft_strdup(varn);
+	free(env);
+	env = new_env;
 }
 
 void	ft_export(char **arg, char **env)
@@ -212,24 +212,75 @@ void	ft_export(char **arg, char **env)
 	char	*varn;
 	char	*varc;
 
+	i = 0;
+	while (arg[++i])
+	{
+		if (ft_isvarn(arg[i]))
+		{
+			ft_read_export_arg(arg[i], varn, varc);
+			if (ft_getenv(env, varn))
+				ft_reset(env, varn, varc);
+			else if (varc)
+				ft_set(env, varn, varc);
+			free(varn);
+			free(varc);
+		}
+		else
+			printf("export: `%s': not a valid identifier", arg[i]);
+	}
+}
+
+void	ft_export_forth(char **env)
+{
+	int	i;
+
+	i = -1;
+	while (env[++i])
+		printf("declare -x %s\n", env[i]);
+}
+
+bool	ft_has_equal(char *arg)
+{
+	int	i;
+
 	i = -1;
 	while (arg[++i])
 	{
-		ft_read_export_arg(arg[i], varn, varc);
-		if (ft_getenv(env, varn) && varc)
-			ft_reset(env, varn, varc);
-		else if (varc)
-			ft_set(env, varn, varc);
-		free(varn);
-		free(varc);
+		if (arg[i] == '=')
+			return (true);
 	}
+	return (false);
 }
 
 void	ft_unset(char **arg, char **env)
 {
+	int	i;
+
+	i = 0;
+	while (arg[++i])
+	{
+		if (ft_isvarn(arg[i]) && !(ft_has_equal(arg[i])))
+		{
+			if (ft_getenv_n(env, arg[i]))
+				ft_unset_real(arg[i], env);
+		}
+	}
 	//Find the varn (variable name), then use ft_getenv_n to locate it
 	//Allocate memory for a new_env, then copy everything in two steps, one before and one after the var to unset
 	//Free the old one and replace it with the new one
+}
+
+bool	ft_env_check(char *var)
+{
+	int	i;
+
+	i = 0;
+	while (var[i] && var[i] != '=')
+		i++;
+	if (var[i])
+		return (true);
+	else
+		return (false);
 }
 
 void	ft_env(char **arg, char **env)
@@ -239,7 +290,10 @@ void	ft_env(char **arg, char **env)
 	(void)arg;
 	i = -1;
 	while (env[++i])
-		printf("%s\n", env[i]);
+	{
+		if (ft_env_check(env[i]))
+			printf("%s\n", env[i]);
+	}
 }
 
 void	ft_exit(void)

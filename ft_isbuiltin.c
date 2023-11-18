@@ -60,7 +60,7 @@ int	ft_isbuiltin(t_shell *s, int ver)
 	else if (ft_compare(s->t[s->i].tok, "pwd"))
 	{
 		if (ver == 1)
-			//ft_pwd(s->t[s->i].arg, s->env);
+			ft_pwd(s->t[s->i].arg, s->env);
 		return (1);
 	}
 	else if (ft_compare(s->t[s->i].tok, "env"))
@@ -69,10 +69,10 @@ int	ft_isbuiltin(t_shell *s, int ver)
 			//ft_env(s->t[s->i].arg, s->env);
 		return (1);
 	}
-	if (ft_compare(s->t[s->i].tok, "export") && !s->t[s->i].arg[1])
+	if (ft_compare(s->t[s->i].tok, "export"))
 	{
-		if (ver == 1)
-			//ft_export(s->arg, s->env);
+		if (ver == 1 && !s->t[s->i].arg[1])
+			ft_export_forth(s->env);
 		return (1);
 	}
 	return (0);

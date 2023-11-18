@@ -37,3 +37,25 @@ void	ft_echo(char **arg, char **env)
 		printf("\n");
 }
 
+void	ft_export_forth(char **env)
+{
+	int	i;
+
+	i = -1;
+	while (env[++i])
+		printf("declare -x %s\n", env[i]);
+}
+
+void	ft_pwd(char **arg, char **env)
+{
+	char	*pwd;
+
+	(void)arg;
+	(void)env;
+	pwd = NULL;
+	pwd = getcwd(NULL, 0);
+	getcwd(pwd, sizeof(pwd));
+	printf("%s\n", pwd);
+	if (pwd)
+		free(pwd);
+}

@@ -247,6 +247,11 @@ int	ft_lexor(t_shell *s)
 	s->t[s->tnb].tok = NULL;
 	ft_tlen(s, s->l);
 	ft_tset(s, s->l);
+	if (g_exit != 0)
+	{
+		s->exit = g_exit;
+		g_exit = 0;
+	}
 	return (1);
 }
 
@@ -257,7 +262,12 @@ void	ft_restart(t_shell *s)
 	i = 0;
 	if (s->l)
 		free(s->l);
-	while (i < s->tnb)
+	if (g_exit != 0)
+	{
+		s->exit = g_exit;
+		g_exit = 0;
+	}
+	while (i < s->tnb && s->t)
 	{
 		if (s->t[i].tok)
 			free(s->t[i].tok);
@@ -321,21 +331,21 @@ void	ft_checkexit(t_shell *s)
 	}
 }
 
-void	ft_ctrlc()
+void	signal_ctrlc()
 {
 	printf("\n");
+	g_exit = 130;
     rl_on_new_line();
 	rl_replace_line("", 0);
     rl_redisplay();
-	g_exit = 130;
 }
 
 void	ft_minishell(t_shell *s)
 {
-	signal(SIGINT, ft_ctrlc);
-	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
+		signal(SIGINT, signal_ctrlc);
+		signal(SIGQUIT, SIG_IGN);
 		s->l = NULL;
 		s->l = readline(s->prompt);
 		if (s->l)
@@ -352,7 +362,6 @@ void	ft_minishell(t_shell *s)
 			ft_exit(s, 1);
 		ft_restart(s);
 	}
-	ft_exit(s, 1);
 }
 
 char	**ft_dpcpy(char **s)
@@ -392,6 +401,7 @@ void	ft_init(t_shell *s, char **env)
 	s->exit = 0;
 	s->env = ft_dpcpy(env);
 	s->ln = 0;
+	s->l = NULL;
 	s->tnb = 0;
 	s->t = NULL;
 	s->i = 0;

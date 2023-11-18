@@ -166,10 +166,18 @@ void	ft_child(t_shell *s, int pip[], int hdpip[])
 	exit(0);
 }
 
+void	signal_fork()
+{
+	g_exit = 130;
+	printf("\n");
+}
+
 int	ft_parent(t_shell *s, int pip[], int hdpip[])
 {
 	int	status;
 
+	signal(SIGINT, signal_fork);
+	signal(SIGQUIT, signal_fork);
 	if (s->t[s->i].input == -5)
 	{
 		close (hdpip[0]);

@@ -154,12 +154,11 @@ void	ft_free(char **s)
 	if (s == NULL)
 		return;
 	i = 0;
-	while (s[i])
+	while (s && s[i])
 	{
 		free(s[i]);
 		i++;
 	}
-	free(s[i]);
 	free(s);
 }
 

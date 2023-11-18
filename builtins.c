@@ -6,7 +6,7 @@
 /*   By: azennari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 17:53:27 by azennari          #+#    #+#             */
-/*   Updated: 2023/11/18 19:48:29 by azennari         ###   ########.fr       */
+/*   Updated: 2023/11/18 20:08:45 by azennari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ void	ft_set_cd(char **env)
 		if (oldpwd)
 			ft_reset(env, "OLDPWD", oldpwd);
 		else
-			//unset oldpwd
+			ft_unset_real(oldpwd, env);
 	}
 	if (oldpwd)
 		ft_reset(env, "PWD", getcwd(NULL, 0));
@@ -276,6 +276,27 @@ bool	ft_has_equal(char *arg)
 	return (false);
 }
 
+void	ft_unset_real(char *arg, char **env)
+{
+	char	**new_env;
+	int		i;
+	int		p;
+
+	i = 0;
+	while (env[i])
+		i++;
+	p = ft_getenv_n(env, arg);
+	free(env[p]);
+	new_env = ft_calloc(sizeof(char *), i);
+	i = 0;
+	while (++i < p)
+		new_env[i] = env[i];
+	while (env[++i])
+		new_env[i - 1] = env[i];
+	free(env);
+	env = new_env;
+}
+
 void	ft_unset(char **arg, char **env)
 {
 	int	i;
@@ -288,10 +309,9 @@ void	ft_unset(char **arg, char **env)
 			if (ft_getenv_n(env, arg[i]))
 				ft_unset_real(arg[i], env);
 		}
+		else
+			printf("unset: `%s': not a valid identifier", arg[i]);
 	}
-	//Find the varn (variable name), then use ft_getenv_n to locate it
-	//Allocate memory for a new_env, then copy everything in two steps, one before and one after the var to unset
-	//Free the old one and replace it with the new one
 }
 
 bool	ft_env_check(char *var)
@@ -324,4 +344,3 @@ void	ft_exit(void)
 {
 	//No clue, really
 }
-*/

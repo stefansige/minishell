@@ -370,11 +370,6 @@ void	signal_ctrlc(int signum)
 	rl_redisplay();
 }
 
-void	ft_builtin(t_shell *s)
-{
-	
-}
-
 void	ft_minishell(t_shell *s)
 {
 	while (1)
@@ -390,7 +385,7 @@ void	ft_minishell(t_shell *s)
 				{
 					if (ft_token(s))
 					{
-						ft_builtin(s);
+						ft_checkexit(s);
 						ft_exec(s);
 					}
 				}

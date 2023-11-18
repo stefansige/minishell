@@ -78,8 +78,11 @@ int	ft_setcmd(t_shell *s)
 		printf ("%s: No such file or directory\n", s->t[s->i].tok);
 		s->exit = 127;
 	}
-	else if (ft_isbuiltin(s, 0) == 1)
+	else if (ft_isbuiltin(s, 0) == 1 || ft_isbuiltin2(s, 0) == 1)
+	{
+		s->t[s->i].cmd = ft_strcpy(s->t[s->i].tok);
 		return (1);
+	}
 	else if (access(s->t[s->i].tok, F_OK) == 0)
 	{
 		s->t[s->i].cmd = ft_strcpy(s->t[s->i].tok);
@@ -159,8 +162,8 @@ void	ft_child(t_shell *s, int pip[], int hdpip[])
 	else if (s->i != s->ln)
 		dup2(pip[1], STDOUT_FILENO);
 	close(pip[0]);
-	//if (ft_isbuiltin(s, 1))
-	//	exit(errno);
+	if (ft_isbuiltin(s, 1))
+		exit(errno);
 	if (execve(s->t[s->i].cmd, s->t[s->i].arg, s->env) == -1)
 		exit(errno);
 	exit(0);
@@ -246,7 +249,8 @@ void	ft_exec(t_shell *s)
 		{
 			if (ft_setcmd(s) == 1)
 			{
-				if (access(s->t[s->i].cmd, X_OK) != 0)
+				if (access(s->t[s->i].cmd, X_OK) != 0
+					&& ft_isbuiltin(s, 0) == 0 && ft_isbuiltin2(s, 0) == 0)
 				{
 					printf("%s: Permission denied\n", s->t[s->i].tok);
 					s->exit = 126;
@@ -254,7 +258,9 @@ void	ft_exec(t_shell *s)
 				else
 				{
 					ft_setarg(s);
-					if (ft_fork(s))
+					if (ft_isbuiltin2(s, 1) == 1)
+						;
+					else if (ft_fork(s))
 						return ;
 				}
 			}

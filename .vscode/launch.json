@@ -1,24 +1,42 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Debug minishell",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/minishell",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable gdb pretty-printing for gdb >= 7.0",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ]
-        }
-    ]
+	"configurations": [
+	{
+		"name": "(gdb) Launch",
+		"type": "cppdbg",
+		"request": "launch",
+		"program": "${workspaceFolder}/minishell",
+		"args": [],
+		"stopAtEntry": false,
+		"cwd": "${fileDirname}",
+		"environment": [],
+		"externalConsole": false,
+		"MIMode": "gdb",
+		"setupCommands": [
+			{
+			 	// https://sourceware.org/gdb/onlinedocs/gdb/Forks.html
+			 	"description": "Fork follows Child process",
+			 	"text": "set follow-fork-mode child",
+			 	"ignoreFailures": true
+			},
+			// {
+			// 	// https://sourceware.org/gdb/onlinedocs/gdb/Forks.html
+			// 	"description": "Fork will keep the other process attached to debugger",
+			// 	"text": "set detach-on-fork off",
+			// 	"ignoreFailures": true
+			// },
+			{
+				"description": "Enable pretty-printing for gdb",
+				"text": "-enable-pretty-printing",
+				"ignoreFailures": true
+			},
+			{
+				"description": "Set Disassembly Flavor to Intel",
+				"text": "-gdb-set disassembly-flavor intel",
+				"ignoreFailures": true
+			}
+		]
+	}
+	]
+
+	
 }

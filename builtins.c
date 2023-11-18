@@ -12,6 +12,7 @@
 
 #include "minishell.h"
 
+/*
 void	ft_echo(char **arg, char **env)
 {
 	bool	flag;
@@ -20,7 +21,7 @@ void	ft_echo(char **arg, char **env)
 	(void)env;
 	flag = false;
 	i = 0;
-	if (!(strcmp(*arg[i], "-n")))
+	if (!(ft_strcmp(*arg[i], "-n")))
 	{
 		flag = true;
 		i++;
@@ -246,3 +247,4 @@ void	ft_exit(void)
 {
 	//No clue, really
 }
+*/

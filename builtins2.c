@@ -259,6 +259,8 @@ bool	ft_isvarn(char *str)
 	int	i;
 
 	i = 0;
+	if (str[i] >= '0' && str[i] <= '9')
+		return (false);
 	while (str[i])
 	{
 		if (!((str[i] >= '0' && str[i] <= '9')

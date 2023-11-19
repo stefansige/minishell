@@ -99,6 +99,8 @@ char	*ft_join(char *str1, char *str2)
 
 	i = 0;
 	k = 0;
+	if (!str1 && !str2)
+		return (NULL);
 	res = ft_calloc(sizeof(char), (ft_strlen(str1) + ft_strlen(str2) + 2));
 	while (str1 && str1[i])
 	{

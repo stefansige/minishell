@@ -377,6 +377,11 @@ void	ft_minishell(t_shell *s)
 		signal(SIGINT, signal_ctrlc);
 		signal(SIGQUIT, SIG_IGN);
 		s->l = readline(s->prompt);
+		if (g_exit != 0)
+		{
+			s->exit = g_exit;
+			g_exit = 0;
+		}
 		if (s->l)
 		{
 			if (ft_valid(s->l))
@@ -437,9 +442,14 @@ char	**ft_dpcpy(char **s)
 
 void	ft_init(t_shell *s, char **env)
 {
+	char	*tmp;
 	s->prompt = ft_strcpy("\033[1;31mminishell>\033[0m");
 	s->exit = 0;
 	s->env = ft_dpcpy(env);
+	tmp = getcwd(NULL, 0);
+	ft_reset(s->env, "SHELL", tmp);
+	if (tmp)
+		free(tmp);
 	s->ln = 0;
 	s->l = NULL;
 	s->tnb = 0;

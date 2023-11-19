@@ -28,22 +28,22 @@ int	ft_compare(char *s1, char *s2)
 
 int	ft_isbuiltin2(t_shell *s, int ver)
 {
-	if (ft_compare(s->t[s->i].tok, "export"))
+	if (ft_compare(s->t[s->i].tok, "export") && s->t[s->i].arg[1])
 	{
-		if (ver == 1 && s->t[s->i].arg[1])
-			//ft_export(s->arg, s->env);
+		if (ver == 1)
+			ft_export(s);
 		return (1);
 	}
 	else if (ft_compare(s->t[s->i].tok, "unset"))
 	{
 		if (ver == 1)
-			//ft_unset(s->arg, s->env)
+			ft_unset(s);
 		return (1);
 	}
 	else if (ft_compare(s->t[s->i].tok, "cd"))
 	{
 		if (ver == 1)
-			ft_cd(s->t[s->i].arg, s->env);
+			ft_cd(s);
 		return (1);
 	}
 	return (0);
@@ -54,25 +54,25 @@ int	ft_isbuiltin(t_shell *s, int ver)
 	if (ft_compare(s->t[s->i].tok, "echo"))
 	{
 		if (ver == 1)
-			ft_echo(s->t[s->i].arg);
+			s->exit = ft_echo(s->t[s->i].arg);
 		return (1);
 	}
 	else if (ft_compare(s->t[s->i].tok, "pwd"))
 	{
 		if (ver == 1)
-			ft_pwd(s->t[s->i].arg, s->env);
+			s->exit = ft_pwd(s->t[s->i].arg, s->env);
 		return (1);
 	}
 	else if (ft_compare(s->t[s->i].tok, "env"))
 	{
 		if (ver == 1)
-			//ft_env(s->t[s->i].arg, s->env);
+			s->exit = ft_env(s->t[s->i].arg, s->env);
 		return (1);
 	}
 	if (ft_compare(s->t[s->i].tok, "export"))
 	{
 		if (ver == 1 && !s->t[s->i].arg[1])
-			ft_export_forth(s->env);
+			s->exit = ft_export_forth(s->env);
 		return (1);
 	}
 	return (0);

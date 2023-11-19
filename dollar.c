@@ -92,6 +92,7 @@ char	*ft_find(char *l, int i, char **env)
 		{
 			z++;
 			y = i;
+			j = 0;
 		}
 		else
 		{
@@ -99,7 +100,7 @@ char	*ft_find(char *l, int i, char **env)
 			y++;
 		}
 	}
-	if (env[z] && env[z][j])
+	if (env[z] && env[z][j] == '=')
 		return (l = ft_adddol(l, i, env[z]));
 	else
 		return (l = ft_rmdol(l, i - 1));

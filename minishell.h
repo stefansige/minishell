@@ -79,12 +79,19 @@ char			*ft_strjoin(char *s1, char *s2);
 int				ft_isarg(int i);
 int				ft_atoi(const char *nptr);
 int				ft_isdir(char *s);
-void			ft_echo(char **arg);
-void			ft_pwd(char **arg, char **env);
-void			ft_env(char **arg, char **env);
+int				ft_echo(char **arg);
+int				ft_pwd(char **arg, char **env);
+int				ft_env(char **arg, char **env);
 int				ft_isbuiltin2(t_shell *s, int ver);
 int				ft_strcmp(char *s1, char *s2);
-void			ft_export_forth(char **env);
-void			ft_cd(char **arg, char **env);
+int				ft_export_forth(char **env);
+void			ft_cd(t_shell *s);
+void			ft_reset(char **env, char *varn, char *varc);
+void			ft_unset(t_shell *s);
+char			**ft_dpcpy(char **s);
+void			ft_export(t_shell *s);
+void			ft_exit(t_shell *s, int ver);
+void			ft_restart(t_shell *s);
+void			ft_restart2(t_shell *s);
 
 #endif

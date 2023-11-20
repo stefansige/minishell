@@ -1,6 +1,6 @@
 NAME = minishell
 CC = gcc
-CFLAGS = -g -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra
 LIBS = -lreadline
 SRC = minishell.c	\
 	utils.c	\
@@ -11,10 +11,21 @@ SRC = minishell.c	\
 	ft_isbuiltin.c	\
 	ft_heredoc.c	\
 	builtins2.c	\
-	get_next_line_utils.c \
-	get_next_line.c \
+	builtins.c \
+	builtins3.c \
+	dollarutils.c \
+	executils.c \
+	executils2.c \
+	exit.c \
+	ft_cd.c \
+	ft_export.c \
+	ft_lexor.c \
+	lexorutils.c \
+	lexorutils2.c \
+	tokenutils.c \
+	utils2.c \
+	utils3.c \
 	
-
 OBJ = $(SRC:.c=.o)
 
 all: $(NAME)

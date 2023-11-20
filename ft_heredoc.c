@@ -36,12 +36,7 @@ void	ft_heredoc(t_shell *s)
 	buf = NULL;
 	while (1)
 	{
-		line = get_next_line(s.)
-		if (!line)
-		{
-			printf("warning heredocument delimited by end of file\n");
-			return ;
-		}
+		line = readline(">");
 		if (ft_compare(s->t[s->i + 1].tok, line))
 		{
 			free (line);
@@ -55,10 +50,5 @@ void	ft_heredoc(t_shell *s)
 		if (temp)
 			free (temp);
 		free(line);
-	}
-	if (g_exit != 0)
-	{
-		s->exit = g_exit;
-		g_exit = 0;
 	}
 }

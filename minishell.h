@@ -93,5 +93,14 @@ void			ft_export(t_shell *s);
 void			ft_exit(t_shell *s, int ver);
 void			ft_restart(t_shell *s);
 void			ft_restart2(t_shell *s);
+int				ft_valid(char *line);
+void			signal_ctrlc(int signum);
+size_t			ft_strlen(char *a);
+char			*ft_strchr(char *a, char c);
+char			*ft_strjoin(char *a, char *b);
+char			*ft_surplus(char *buffer);
+char			*ft_line(char *buffer);
+char			*ft_read(int fd, char *res);
+char			*get_next_line(int fd);
 
 #endif

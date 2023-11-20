@@ -11,6 +11,9 @@ SRC = minishell.c	\
 	ft_isbuiltin.c	\
 	ft_heredoc.c	\
 	builtins2.c	\
+	get_next_line_utils.c \
+	get_next_line.c \
+	
 
 OBJ = $(SRC:.c=.o)
 

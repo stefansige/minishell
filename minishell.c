@@ -23,7 +23,6 @@ int	ft_valid(char *line)
 	{
 		if ((line[i] < 32 && line[i] > 13) || line[i] < 7)
 		{
-			free (line);
 			return (0);
 		}
 		i++;
@@ -374,8 +373,8 @@ void	ft_minishell(t_shell *s)
 {
 	while (1)
 	{
-		signal(SIGINT, signal_ctrlc);
 		signal(SIGQUIT, SIG_IGN);
+		signal(SIGINT, signal_ctrlc);
 		s->l = readline(s->prompt);
 		if (g_exit != 0)
 		{

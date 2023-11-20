@@ -141,7 +141,6 @@ void	ft_writein(t_shell *s, int hdpip[])
 		write(hdpip[1], &s->t[s->i].here[i], 1);
 		i++;
 	}
-	write(hdpip[1], &s->t[s->i].here[i], 1);
 }
 
 void	ft_child(t_shell *s, int pip[], int hdpip[])
